@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>부산 지역 IT 및 AI 관련 학과 현황 분석 대시보드</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter & Noto Sans KR -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Noto Sans KR"', 'sans-serif'],
+                    },
+                    colors: {
+                        busan: {
+                            50: '#f0f7ff',
+                            100: '#e0effe',
+                            500: '#0066cc',
+                            600: '#0052a3',
+                            700: '#003d7a',
+                            900: '#001a33',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #f8fafc;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        .card-hover {
+            transition: all 0.25s ease-in-out;
+        }
+        .card-hover:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+        }
+    </style>
+</head>
+<body class="text-slate-800 antialiased min-h-screen flex flex-col">
+
+    <!-- Header Navbar -->
+    <header class="bg-slate-900 text-white sticky top-0 z-50 shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center space-x-3">
+                    <a href="../index.html" class="bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white px-3 py-2 rounded-lg font-medium text-xs sm:text-sm flex items-center gap-2 transition border border-slate-700/80 shadow-sm" title="메인 페이지로 이동">
+                        <i class="fa-solid fa-house text-blue-400"></i>
+                        <span>홈</span>
+                    </a>
+                    <div class="bg-blue-600 text-white p-2 rounded-lg font-bold flex items-center justify-center w-10 h-10 shadow-md">
+                        <i class="fa-solid fa-chart-pie text-lg"></i>
+                    </div>
+                    <div>
+                        <h1 class="font-extrabold text-lg sm:text-xl tracking-tight text-white flex items-center gap-2">
+                            부산 IT & AI 교육 생태계 <span class="text-xs font-normal bg-blue-500/30 text-blue-300 px-2.5 py-0.5 rounded-full border border-blue-400/30">데이터 분석 보고서</span>
+                        </h1>
+                    </div>
+                </div>
+                
+                <!-- Quick Navigation Badges/Controls -->
+                <div class="hidden md:flex items-center space-x-1 text-sm font-medium">
+                    <button onclick="scrollToSection('summary')" class="px-3 py-1.5 rounded-md hover:bg-slate-800 text-slate-300 hover:text-white transition">핵심요약</button>
+                    <button onclick="scrollToSection('establishment')" class="px-3 py-1.5 rounded-md hover:bg-slate-800 text-slate-300 hover:text-white transition">설립주체</button>
+                    <button onclick="scrollToSection('geography')" class="px-3 py-1.5 rounded-md hover:bg-slate-800 text-slate-300 hover:text-white transition">지리적 거점</button>
+                    <button onclick="scrollToSection('specialty')" class="px-3 py-1.5 rounded-md hover:bg-slate-800 text-slate-300 hover:text-white transition">전공분류</button>
+                    <button onclick="scrollToSection('strategy')" class="px-3 py-1.5 rounded-md hover:bg-slate-800 text-slate-300 hover:text-white transition">전략가이드</button>
+                    <button onclick="scrollToSection('database')" class="px-3 py-1.5 rounded-md hover:bg-slate-800 text-slate-300 hover:text-white transition">학과DB</button>
+                </div>
+
+                <div class="flex items-center gap-2">
+                    <button id="exportReportBtn" class="bg-blue-600 hover:bg-blue-500 text-white text-xs sm:text-sm px-3 py-1.5 rounded-lg font-medium shadow transition flex items-center gap-1.5">
+                        <i class="fa-solid fa-file-arrow-down"></i> <span class="hidden sm:inline">요약 리포트</span> 내보내기
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Layout -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-10">
+
+        <!-- Hero Banner & Executive Summary -->
+        <section id="summary" class="bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 text-white rounded-2xl p-6 sm:p-8 shadow-xl relative overflow-hidden border border-slate-800">
+            <div class="absolute -right-10 -bottom-10 opacity-10 pointer-events-none">
+                <i class="fa-solid fa-microchip text-[240px] text-blue-400"></i>
+            </div>
+            
+            <div class="relative z-10 max-w-3xl">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/20 text-blue-300 border border-blue-400/30 text-xs font-semibold mb-4">
+                    <i class="fa-solid fa-compass"></i> 부산권 디지털 전환(DX) 핵심 지표
+                </div>
+                <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-white mb-3 leading-snug">
+                    부산 IT & AI 교육 지형도: <br class="hidden sm:inline"/><span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-300">연구 중심 국립대</span>와 <span class="text-transparent bg-clip-text bg-gradient-to-r from-teal-300 to-emerald-400">실무 중심 사립대</span>의 이원화 구조
+                </h2>
+                <p class="text-slate-300 text-sm sm:text-base leading-relaxed mb-6">
+                    부산 지역 15개 핵심 IT 학과의 분석 결과, 연구 중심 전문화(국립대)와 실무적 양적 공급(사립 및 사이버대)이 명확히 분화되어 있습니다. 금정구·사상구·남구의 3대 핵심 거점을 중심으로 구축된 현 생태계를 기반으로 AI 시대 전략적 대응 방안을 제시합니다.
+                </p>
+            </div>
+
+            <!-- Key Metric Cards Grid -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6 pt-6 border-t border-slate-800/80">
+                <div class="bg-slate-800/60 backdrop-blur border border-slate-700/50 p-4 rounded-xl text-center">
+                    <div class="text-slate-400 text-xs font-medium mb-1"><i class="fa-solid fa-graduation-cap text-blue-400 mr-1"></i> 총 분석 학과 수</div>
+                    <div class="text-3xl font-black text-white">15<span class="text-base font-normal text-slate-400 ml-1">개</span></div>
+                    <div class="text-[11px] text-blue-300 mt-1">부산 내 IT·AI 관련 학과</div>
+                </div>
+
+                <div class="bg-slate-800/60 backdrop-blur border border-slate-700/50 p-4 rounded-xl text-center">
+                    <div class="text-slate-400 text-xs font-medium mb-1"><i class="fa-solid fa-building-columns text-emerald-400 mr-1"></i> 국립대 점유율</div>
+                    <div class="text-3xl font-black text-emerald-400">40<span class="text-base font-normal text-slate-400 ml-1">%</span></div>
+                    <div class="text-[11px] text-emerald-300 mt-1">6개 학과 (AI/SW 독점)</div>
+                </div>
+
+                <div class="bg-slate-800/60 backdrop-blur border border-slate-700/50 p-4 rounded-xl text-center">
+                    <div class="text-slate-400 text-xs font-medium mb-1"><i class="fa-solid fa-location-dot text-amber-400 mr-1"></i> 최대 밀집 거점</div>
+                    <div class="text-2xl sm:text-3xl font-black text-amber-400">금정구</div>
+                    <div class="text-[11px] text-amber-300 mt-1">5개 학과 (연구/엘리트 Hub)</div>
+                </div>
+
+                <div class="bg-slate-800/60 backdrop-blur border border-slate-700/50 p-4 rounded-xl text-center">
+                    <div class="text-slate-400 text-xs font-medium mb-1"><i class="fa-solid fa-code text-indigo-400 mr-1"></i> 전산/컴퓨터공학 비중</div>
+                    <div class="text-3xl font-black text-indigo-400">86.7<span class="text-base font-normal text-slate-400 ml-1">%</span></div>
+                    <div class="text-[11px] text-indigo-300 mt-1">13개 학과 전통 CS 중심</div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- SECTION 1: 설립 주체 및 운영 형태 분석 -->
+        <section id="establishment" class="bg-white rounded-2xl p-6 sm:p-8 shadow-sm border border-slate-200">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 pb-4 border-b border-slate-100">
+                <div>
+                    <span class="text-xs font-bold uppercase tracking-wider text-blue-600 bg-blue-50 px-2.5 py-1 rounded">SECTION 01</span>
+                    <h3 class="text-xl font-bold text-slate-900 mt-2 flex items-center gap-2">
+                        설립 주체 및 운영 형태에 따른 공급 구조
+                    </h3>
+                    <p class="text-sm text-slate-500 mt-1">국립 대학교의 질적 선점과 사립/사이버 대학교의 양적·유연적 교육 접근성 비교</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                <!-- Chart Container -->
+                <div class="lg:col-span-5 bg-slate-50 p-5 rounded-xl border border-slate-200 flex flex-col items-center justify-center">
+                    <h4 class="text-sm font-bold text-slate-700 mb-2 text-center">설립 구분별 학과 수 분포</h4>
+                    <div class="relative w-full max-w-[280px] h-[260px]">
+                        <canvas id="establishmentChart"></canvas>
+                    </div>
+                    <div class="text-xs text-slate-500 text-center mt-3">
+                        국립 6개 (40%) | 사립 8개 (53.3%) | 사이버 1개 (6.7%)
+                    </div>
+                </div>
+
+                <!-- Descriptive Content & Insights -->
+                <div class="lg:col-span-7 space-y-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <div class="p-4 rounded-xl bg-blue-50/70 border border-blue-200">
+                            <div class="flex items-center gap-2 text-blue-700 font-bold text-sm mb-1">
+                                <i class="fa-solid fa-university"></i> 국립 대학교
+                            </div>
+                            <p class="text-xs text-slate-600"><strong>6개 학과 (40%)</strong><br>부산대, 국립한국해양대, 국립부경대</p>
+                            <span class="inline-block mt-2 text-[11px] bg-blue-600 text-white px-2 py-0.5 rounded font-medium">연구 & 하이테크 중심</span>
+                        </div>
+
+                        <div class="p-4 rounded-xl bg-indigo-50/70 border border-indigo-200">
+                            <div class="flex items-center gap-2 text-indigo-700 font-bold text-sm mb-1">
+                                <i class="fa-solid fa-school"></i> 사립 대학교
+                            </div>
+                            <p class="text-xs text-slate-600"><strong>8개 학과 (53.3%)</strong><br>경성대, 동명대, 동아대, 동의대, 신라대 등 7개교</p>
+                            <span class="inline-block mt-2 text-[11px] bg-indigo-600 text-white px-2 py-0.5 rounded font-medium">실무 인력 공급망</span>
+                        </div>
+
+                        <div class="p-4 rounded-xl bg-emerald-50/70 border border-emerald-200">
+                            <div class="flex items-center gap-2 text-emerald-700 font-bold text-sm mb-1">
+                                <i class="fa-solid fa-laptop-house"></i> 사립 사이버대학
+                            </div>
+                            <p class="text-xs text-slate-600"><strong>1개 학과 (6.7%)</strong><br>부산디지털대학교</p>
+                            <span class="inline-block mt-2 text-[11px] bg-emerald-600 text-white px-2 py-0.5 rounded font-medium">원격 & 평생교육</span>
+                        </div>
+                    </div>
+
+                    <!-- Key Takeaway Box -->
+                    <div class="bg-slate-900 text-slate-200 p-4 rounded-xl text-sm leading-relaxed border border-slate-800">
+                        <div class="font-bold text-white mb-1 flex items-center gap-2">
+                            <i class="fa-solid fa-lightbulb text-amber-400"></i> 심층 인사이트
+                        </div>
+                        국립 대학은 분석 대상 중 40%를 차지하며 특히 <b>인공지능공학 및 응용소프트웨어공학 분야 공급을 독점</b>하고 있습니다. 이는 풍부한 국고 지원과 연구 인프라를 바탕으로 한 고부가가치 기술 선점 효과를 보여줍니다. 반면 사립 및 사이버 대학은 주간 및 원격 과정을 통해 지역 내 재직자 및 평생 학습자에게 유연한 교육 환경을 제공합니다.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- SECTION 2: 지리적 밀집도 및 거점 분석 -->
+        <section id="geography" class="bg-white rounded-2xl p-6 sm:p-8 shadow-sm border border-slate-200">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 pb-4 border-b border-slate-100">
+                <div>
+                    <span class="text-xs font-bold uppercase tracking-wider text-blue-600 bg-blue-50 px-2.5 py-1 rounded">SECTION 02</span>
+                    <h3 class="text-xl font-bold text-slate-900 mt-2 flex items-center gap-2">
+                        부산 기초자치단체별 교육 인프라 밀집도
+                    </h3>
+                    <p class="text-sm text-slate-500 mt-1">금정구 · 사상구 · 남구 3대 핵심 거점 공간 분화 현상 분석</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                <!-- Bar Chart Column -->
+                <div class="lg:col-span-5 bg-slate-50 p-5 rounded-xl border border-slate-200 flex flex-col justify-between">
+                    <div>
+                        <h4 class="text-sm font-bold text-slate-800 mb-1">구별 IT/AI 학과 보유 분포</h4>
+                        <p class="text-xs text-slate-500 mb-4">특정 구지역으로의 고도 집중 현상</p>
+                        <div class="h-[280px]">
+                            <canvas id="districtChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-slate-200 text-xs text-slate-500 flex justify-between">
+                        <span><i class="fa-solid fa-circle text-blue-600 mr-1"></i>3대 거점: 총 12개 (80%)</span>
+                        <span><i class="fa-solid fa-circle text-slate-400 mr-1"></i>기타 3개 구: 3개 (20%)</span>
+                    </div>
+                </div>
+
+                <!-- Hub Detail Cards -->
+                <div class="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <!-- 금정구 Card -->
+                    <div class="p-4 rounded-xl border border-blue-200 bg-gradient-to-br from-blue-50/50 to-white card-hover relative overflow-hidden">
+                        <div class="flex justify-between items-start mb-2">
+                            <div>
+                                <span class="bg-blue-600 text-white text-[11px] font-bold px-2 py-0.5 rounded">5개 학과 (33.3%)</span>
+                                <h4 class="text-lg font-bold text-slate-900 mt-1">금정구</h4>
+                            </div>
+                            <div class="w-10 h-10 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-bold">
+                                <i class="fa-solid fa-microscope text-lg"></i>
+                            </div>
+                        </div>
+                        <div class="text-xs font-semibold text-blue-700 mb-2">연구 및 엘리트 Hub</div>
+                        <p class="text-xs text-slate-600 leading-relaxed mb-3">
+                            <b>부산대학교(4)</b> 및 <b>부산외국어대학교(1)</b>가 위치. 부산 IT 연구 및 하이테크 인재 양성의 정점을 형성.
+                        </p>
+                        <div class="text-[11px] bg-slate-100 p-2 rounded text-slate-600">
+                            포함 학과: 컴퓨터공학, 정보컴퓨터공학, 인공지능전공, 디자인테크놀로지 등
+                        </div>
+                    </div>
+
+                    <!-- 사상구 Card -->
+                    <div class="p-4 rounded-xl border border-teal-200 bg-gradient-to-br from-teal-50/50 to-white card-hover relative overflow-hidden">
+                        <div class="flex justify-between items-start mb-2">
+                            <div>
+                                <span class="bg-teal-600 text-white text-[11px] font-bold px-2 py-0.5 rounded">4개 학과 (26.7%)</span>
+                                <h4 class="text-lg font-bold text-slate-900 mt-1">사상구</h4>
+                            </div>
+                            <div class="w-10 h-10 rounded-full bg-teal-100 text-teal-700 flex items-center justify-center font-bold">
+                                <i class="fa-solid fa-gears text-lg"></i>
+                            </div>
+                        </div>
+                        <div class="text-xs font-semibold text-teal-700 mb-2">직업 및 디지털 전환 Hub</div>
+                        <p class="text-xs text-slate-600 leading-relaxed mb-3">
+                            <b>동서대학교(2)</b>, <b>신라대학교(1)</b>, <b>부산디지털대학교(1)</b> 밀집. 산업 현장 투입용 실무·원격 인력 공급 전략 거점.
+                        </p>
+                        <div class="text-[11px] bg-slate-100 p-2 rounded text-slate-600">
+                            특징: 사이버대 원격 과정 포함, 실무 중심 개편
+                        </div>
+                    </div>
+
+                    <!-- 남구 Card -->
+                    <div class="p-4 rounded-xl border border-indigo-200 bg-gradient-to-br from-indigo-50/50 to-white card-hover relative overflow-hidden">
+                        <div class="flex justify-between items-start mb-2">
+                            <div>
+                                <span class="bg-indigo-600 text-white text-[11px] font-bold px-2 py-0.5 rounded">3개 학과 (20.0%)</span>
+                                <h4 class="text-lg font-bold text-slate-900 mt-1">남구</h4>
+                            </div>
+                            <div class="w-10 h-10 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold">
+                                <i class="fa-solid fa-handshake-angle text-lg"></i>
+                            </div>
+                        </div>
+                        <div class="text-xs font-semibold text-indigo-700 mb-2">기관 협력 Hub</div>
+                        <p class="text-xs text-slate-600 leading-relaxed mb-3">
+                            <b>국립부경대학교(1)</b>, <b>경성대학교(1)</b>, <b>동명대학교(1)</b> 밀집. 국·사립 간 교류와 지역 산학협력 중심.
+                        </p>
+                        <div class="text-[11px] bg-slate-100 p-2 rounded text-slate-600">
+                            특징: 대학 간 밀집 인프라 기반 교류 유용
+                        </div>
+                    </div>
+
+                    <!-- 기타 지역 Card -->
+                    <div class="p-4 rounded-xl border border-slate-200 bg-slate-50 card-hover relative overflow-hidden flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-start mb-2">
+                                <div>
+                                    <span class="bg-slate-600 text-white text-[11px] font-bold px-2 py-0.5 rounded">각 1개 학과 (20.0%)</span>
+                                    <h4 class="text-lg font-bold text-slate-900 mt-1">기타 거점 지역</h4>
+                                </div>
+                                <div class="w-10 h-10 rounded-full bg-slate-200 text-slate-700 flex items-center justify-center font-bold">
+                                    <i class="fa-solid fa-map-pin text-lg"></i>
+                                </div>
+                            </div>
+                            <ul class="text-xs text-slate-600 space-y-1 mt-2">
+                                <li>• <b>영도구:</b> 국립한국해양대학교 (인공지능공학부)</li>
+                                <li>• <b>사하구:</b> 동아대학교 (컴퓨터공학)</li>
+                                <li>• <b>부산진구:</b> 동의대학교 (컴퓨터공학)</li>
+                            </ul>
+                        </div>
+                        <div class="text-[11px] text-amber-700 bg-amber-50 p-2 rounded border border-amber-200 mt-3">
+                            ⚠️ 지역 간 교육 서비스 불균형 해소 정책 필요
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- SECTION 3: 학문적 세부 전공 분야 분석 -->
+        <section id="specialty" class="bg-white rounded-2xl p-6 sm:p-8 shadow-sm border border-slate-200">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 pb-4 border-b border-slate-100">
+                <div>
+                    <span class="text-xs font-bold uppercase tracking-wider text-blue-600 bg-blue-50 px-2.5 py-1 rounded">SECTION 03</span>
+                    <h3 class="text-xl font-bold text-slate-900 mt-2 flex items-center gap-2">
+                        표준분류계열(소) 학과 세부 전공 특성화 분석
+                    </h3>
+                    <p class="text-sm text-slate-500 mt-1">전통적 전산학 중심 공급과 신흥 AI·SW 특성화의 현주소</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                <!-- Specialty Pie Chart -->
+                <div class="lg:col-span-5 bg-slate-50 p-5 rounded-xl border border-slate-200 flex flex-col items-center justify-center">
+                    <h4 class="text-sm font-bold text-slate-800 mb-2">표준분류계열(소) 구성 비율</h4>
+                    <div class="relative w-full max-w-[270px] h-[250px]">
+                        <canvas id="specialtyChart"></canvas>
+                    </div>
+                    <div class="w-full text-xs text-slate-600 space-y-1 mt-3 px-2">
+                        <div class="flex justify-between"><span>• 전산학·컴퓨터공학:</span><b>13개 (86.7%)</b></div>
+                        <div class="flex justify-between text-indigo-600"><span>• 인공지능공학:</span><b>1개 (6.7%)</b></div>
+                        <div class="flex justify-between text-teal-600"><span>• 응용소프트웨어공학:</span><b>1개 (6.7%)</b></div>
+                    </div>
+                </div>
+
+                <!-- Deep Analysis & Insights Callouts -->
+                <div class="lg:col-span-7 space-y-4">
+                    <!-- Key Findings Cards -->
+                    <div class="bg-gradient-to-r from-blue-900 to-slate-900 text-white p-5 rounded-xl shadow-md border border-slate-800">
+                        <div class="flex items-center gap-2 text-blue-400 font-bold text-sm mb-2">
+                            <i class="fa-solid fa-crown text-amber-400"></i> 부산대학교의 독보적 전공 분화
+                        </div>
+                        <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                            부산대학교는 데이터 내 유일하게 <b>3개 세부 분류(전산학, AI, 응용SW)를 모두 보유한 대학</b>입니다.
+                            <i>인공지능전공</i>과 <i>디자인테크놀로지전공</i>을 선제적으로 신설·운영하여 학문적 성숙도와 특성화 역량에서 독보적 위치를 점하고 있습니다.
+                        </p>
+                    </div>
+
+                    <div class="bg-amber-50 border border-amber-200 p-5 rounded-xl text-slate-800">
+                        <div class="flex items-center gap-2 text-amber-800 font-bold text-sm mb-2">
+                            <i class="fa-solid fa-triangle-exclamation text-amber-600"></i> 브랜드와 행정적 분류 간의 괴리 현상
+                        </div>
+                        <p class="text-xs sm:text-sm text-slate-700 leading-relaxed mb-2">
+                            <b>국립한국해양대학교 Case:</b> 학부 공식 명칭은 <span class="underline decoration-amber-500 font-semibold">'인공지능공학부'</span>이나, 정부 행정 표준분류상으로는 여전히 <span class="underline decoration-amber-500 font-semibold">'전산학·컴퓨터공학'</span>으로 집계됩니다.
+                        </p>
+                        <p class="text-xs text-slate-600 bg-white/80 p-2.5 rounded border border-amber-200">
+                            💡 이는 산업 현장의 마케팅 브랜드 선점 속도와 행정적 학과 분류 체계 간의 시차(Time Lag)를 보여주는 대표적 사례입니다.
+                        </p>
+                    </div>
+
+                    <div class="p-4 bg-slate-100 rounded-xl text-xs text-slate-600 flex items-center gap-3">
+                        <i class="fa-solid fa-circle-info text-blue-600 text-xl flex-shrink-0"></i>
+                        <span>전체 학과의 <b>86.7%가 전통 CS 분류</b>에 머물러 있어, 4차 산업혁명 및 AI 트렌드에 대응하는 공식 학과 개편 가속화가 과제로 남아있습니다.</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- SECTION 4: 전략 가이드 및 체크리스트 -->
+        <section id="strategy" class="bg-slate-900 text-white rounded-2xl p-6 sm:p-8 shadow-xl border border-slate-800">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 pb-4 border-b border-slate-800">
+                <div>
+                    <span class="text-xs font-bold uppercase tracking-wider text-blue-400 bg-blue-900/50 px-2.5 py-1 rounded border border-blue-500/30">SECTION 04</span>
+                    <h3 class="text-xl font-bold text-white mt-2 flex items-center gap-2">
+                        부산 IT 인재 양성 대전환 전략 가이드
+                    </h3>
+                    <p class="text-sm text-slate-400 mt-1">정책 결정자 및 예비 전공자를 위한 맞춤형 실행 체크리스트</p>
+                </div>
+                
+                <!-- Tab Switching -->
+                <div class="flex bg-slate-800 p-1 rounded-xl border border-slate-700 self-start md:self-auto">
+                    <button id="tabPolicyBtn" onclick="switchStrategyTab('policy')" class="px-4 py-1.5 rounded-lg text-xs font-bold transition bg-blue-600 text-white">
+                        <i class="fa-solid fa-landmark mr-1"></i> 정책 결정자용
+                    </button>
+                    <button id="tabStudentBtn" onclick="switchStrategyTab('student')" class="px-4 py-1.5 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white">
+                        <i class="fa-solid fa-user-graduate mr-1"></i> 예비 전공자용
+                    </button>
+                </div>
+            </div>
+
+            <!-- Policy Makers Tab Content -->
+            <div id="policyTabContent" class="space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Policy Item 1 -->
+                    <div class="bg-slate-800/80 p-5 rounded-xl border border-slate-700/80 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="bg-blue-500/20 text-blue-300 text-xs font-bold px-2.5 py-1 rounded border border-blue-400/30">전략 01</span>
+                                <i class="fa-solid fa-map-location-dot text-blue-400 text-xl"></i>
+                            </div>
+                            <h4 class="text-base font-bold text-white mb-2">지역 맞춤형 IT 특화 클러스터 육성</h4>
+                            <p class="text-xs text-slate-300 leading-relaxed mb-4">
+                                금정구(연구 중심 하이테크 Hub)와 사상구(실무·원격 디지털 전환 Hub)의 공간적·학문적 특성을 극대화한 클러스터별 차등화 예산 편성을 추진하십시오.
+                            </p>
+                        </div>
+                        <label class="flex items-center gap-2 bg-slate-900/60 p-2.5 rounded-lg text-xs text-slate-300 cursor-pointer hover:bg-slate-900">
+                            <input type="checkbox" class="w-4 h-4 text-blue-600 rounded focus:ring-blue-500" onchange="updateChecklistProgress()">
+                            <span>권역별 특화 예산 지원 정책 수립 완료</span>
+                        </label>
+                    </div>
+
+                    <!-- Policy Item 2 -->
+                    <div class="bg-slate-800/80 p-5 rounded-xl border border-slate-700/80 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="bg-indigo-500/20 text-indigo-300 text-xs font-bold px-2.5 py-1 rounded border border-indigo-400/30">전략 02</span>
+                                <i class="fa-solid fa-database text-indigo-400 text-xl"></i>
+                            </div>
+                            <h4 class="text-base font-bold text-white mb-2">행정적 표준분류 체계 현실화 및 신속 반영</h4>
+                            <p class="text-xs text-slate-300 leading-relaxed mb-4">
+                                한국해양대 등 명칭과 분류가 상이한 사례를 정비하여 AI·빅데이터·클라우드 등 신기술 트렌드가 공공 데이터 및 정책 데이터베이스에 실시간 반영되도록 유도하십시오.
+                            </p>
+                        </div>
+                        <label class="flex items-center gap-2 bg-slate-900/60 p-2.5 rounded-lg text-xs text-slate-300 cursor-pointer hover:bg-slate-900">
+                            <input type="checkbox" class="w-4 h-4 text-indigo-600 rounded focus:ring-indigo-500" onchange="updateChecklistProgress()">
+                            <span>대학-행정 데이터 가이드라인 정비 완료</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Student Tab Content (Hidden by default) -->
+            <div id="studentTabContent" class="space-y-6 hidden">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Student Item 1 -->
+                    <div class="bg-slate-800/80 p-5 rounded-xl border border-slate-700/80 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="bg-teal-500/20 text-teal-300 text-xs font-bold px-2.5 py-1 rounded border border-teal-400/30">로드맵 01</span>
+                                <i class="fa-solid fa-bullseye text-teal-400 text-xl"></i>
+                            </div>
+                            <h4 class="text-base font-bold text-white mb-2">전문성 타겟팅: AI & SW 융합 특성화</h4>
+                            <p class="text-xs text-slate-300 leading-relaxed mb-4">
+                                범용 CS 학위 대신 AI 선도 연구 및 디자인테크 등 세부 특성화 커리큘럼을 희망하는 경우 부산대학교 등 거점 국립대의 특성화 전공을 1순위로 고려하십시오.
+                            </p>
+                        </div>
+                        <label class="flex items-center gap-2 bg-slate-900/60 p-2.5 rounded-lg text-xs text-slate-300 cursor-pointer hover:bg-slate-900">
+                            <input type="checkbox" class="w-4 h-4 text-teal-600 rounded focus:ring-teal-500" onchange="updateChecklistProgress()">
+                            <span>세부 특성화 세부 커리큘럼 분석 완료</span>
+                        </label>
+                    </div>
+
+                    <!-- Student Item 2 -->
+                    <div class="bg-slate-800/80 p-5 rounded-xl border border-slate-700/80 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="bg-emerald-500/20 text-emerald-300 text-xs font-bold px-2.5 py-1 rounded border border-emerald-400/30">로드맵 02</span>
+                                <i class="fa-solid fa-clock-rotate-left text-emerald-400 text-xl"></i>
+                            </div>
+                            <h4 class="text-base font-bold text-white mb-2">학습 유연성 확보: 직장 병행 및 원격 트랙</h4>
+                            <p class="text-xs text-slate-300 leading-relaxed mb-4">
+                                산업체 재직 중이거나 시공간적 유연성이 중요한 경우, 사상구 소재 부산디지털대학교의 원격 과정이나 동서대·신라대의 실무형 개편 전공을 전략적으로 활용하십시오.
+                            </p>
+                        </div>
+                        <label class="flex items-center gap-2 bg-slate-900/60 p-2.5 rounded-lg text-xs text-slate-300 cursor-pointer hover:bg-slate-900">
+                            <input type="checkbox" class="w-4 h-4 text-emerald-600 rounded focus:ring-emerald-500" onchange="updateChecklistProgress()">
+                            <span>원격/실무 병행 트랙 검토 완료</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Progress Indicator -->
+            <div class="mt-6 pt-4 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400">
+                <span>전략 체크리스트 달성률: <b id="progressPercent" class="text-blue-400">0%</b></span>
+                <div class="w-48 bg-slate-800 rounded-full h-2 overflow-hidden border border-slate-700">
+                    <div id="progressBar" class="bg-gradient-to-r from-blue-500 to-teal-400 h-full w-0 transition-all duration-300"></div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- SECTION 5: 학과 데이터베이스 (Interactive Table) -->
+        <section id="database" class="bg-white rounded-2xl p-6 sm:p-8 shadow-sm border border-slate-200">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 pb-4 border-b border-slate-100">
+                <div>
+                    <span class="text-xs font-bold uppercase tracking-wider text-blue-600 bg-blue-50 px-2.5 py-1 rounded">SECTION 05</span>
+                    <h3 class="text-xl font-bold text-slate-900 mt-2 flex items-center gap-2">
+                        부산 IT/AI 15개 학과 종합 데이터베이스
+                    </h3>
+                    <p class="text-sm text-slate-500 mt-1">대학별, 설립주체별, 위치별, 표준분류별 필터링 및 검색</p>
+                </div>
+                <div class="text-xs text-slate-500">
+                    검색 결과: <b id="tableCount" class="text-blue-600">15</b>개 학과
+                </div>
+            </div>
+
+            <!-- Filters Bar -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 mb-6 bg-slate-50 p-4 rounded-xl border border-slate-200">
+                <!-- Search Input -->
+                <div class="relative">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-slate-400 text-xs"></i>
+                    <input type="text" id="searchInput" placeholder="학교명 또는 학과명 검색..." oninput="filterTable()" 
+                           class="w-full pl-8 pr-3 py-2 text-xs bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+
+                <!-- Establishment Filter -->
+                <select id="establishmentFilter" onchange="filterTable()" class="w-full py-2 px-3 text-xs bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="">전체 설립 구분 (국립/사립/사이버)</option>
+                    <option value="국립">국립</option>
+                    <option value="사립">사립</option>
+                </select>
+
+                <!-- District Filter -->
+                <select id="districtFilter" onchange="filterTable()" class="w-full py-2 px-3 text-xs bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="">전체 구지역 (금정/사상/남구 등)</option>
+                    <option value="금정구">금정구 (5)</option>
+                    <option value="사상구">사상구 (4)</option>
+                    <option value="남구">남구 (3)</option>
+                    <option value="영도구">영도구 (1)</option>
+                    <option value="사하구">사하구 (1)</option>
+                    <option value="부산진구">부산진구 (1)</option>
+                </select>
+
+                <!-- Specialty Filter -->
+                <select id="specialtyFilter" onchange="filterTable()" class="w-full py-2 px-3 text-xs bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="">전체 표준분류계열(소)</option>
+                    <option value="전산학·컴퓨터공학">전산학·컴퓨터공학</option>
+                    <option value="인공지능공학">인공지능공학</option>
+                    <option value="응용소프트웨어공학">응용소프트웨어공학</option>
+                </select>
+            </div>
+
+            <!-- Table Container -->
+            <div class="overflow-x-auto custom-scrollbar rounded-xl border border-slate-200">
+                <table class="w-full text-left border-collapse text-xs">
+                    <thead>
+                        <tr class="bg-slate-100 text-slate-700 font-bold border-b border-slate-200">
+                            <th class="p-3">#</th>
+                            <th class="p-3">학교명</th>
+                            <th class="p-3">학과/전공명</th>
+                            <th class="p-3">설립 구분</th>
+                            <th class="p-3">학교 종류</th>
+                            <th class="p-3">위치 (구)</th>
+                            <th class="p-3">표준분류계열(소)</th>
+                            <th class="p-3">거점 특성</th>
+                        </tr>
+                    </thead>
+                    <tbody id="departmentTableBody" class="divide-y divide-slate-200 bg-white">
+                        <!-- Dynamically filled by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Export Report Summary Modal -->
+    <div id="exportModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+        <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 relative">
+            <button onclick="closeExportModal()" class="absolute right-4 top-4 text-slate-400 hover:text-slate-600 text-lg">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div class="flex items-center gap-2 text-blue-600 font-bold mb-2">
+                <i class="fa-solid fa-file-invoice text-xl"></i>
+                <span>부산 IT/AI 학과 분석 핵심 요약서</span>
+            </div>
+            <p class="text-xs text-slate-500 mb-4">본 요약 텍스트는 클립보드에 복사하거나 복사 후 문서로 활용 가능합니다.</p>
+            
+            <textarea id="summaryTextarea" readonly class="w-full h-64 p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs font-mono text-slate-700 custom-scrollbar focus:outline-none mb-4 leading-relaxed"></textarea>
+            
+            <div class="flex justify-end gap-2">
+                <button onclick="closeExportModal()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-lg transition">닫기</button>
+                <button onclick="copySummaryText()" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold rounded-lg transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-copy"></i> 복사하기
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 text-xs py-8 border-t border-slate-800 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div>
+                <p class="font-bold text-slate-200 mb-1">부산 IT 및 인공지능 관련 학과 현황 분석 보고서 대시보드</p>
+                <p class="text-slate-500">데이터 출처: 부산권 15개 학과 구성 Source Context 분석 자료</p>
+            </div>
+            <div class="text-slate-500 text-right">
+                <p>© 2026 부산 IT 교육 생태계 분석 프로젝트</p>
+                <p class="text-[11px] text-slate-600">지능형 데이터 시각화 & 대시보드 시스템</p>
+            </div>
+        </div>
+    </footer>
+
+
+    <script>
+        // Data Store (15 Departments from source)
+        const departmentsData = [
+            { id: 1, school: "부산대학교", dept: "컴퓨터공학전공", est: "국립", type: "대학교", district: "금정구", specialty: "전산학·컴퓨터공학", hub: "연구&엘리트 Hub" },
+            { id: 2, school: "부산대학교", dept: "정보컴퓨터공학부", est: "국립", type: "대학교", district: "금정구", specialty: "전산학·컴퓨터공학", hub: "연구&엘리트 Hub" },
+            { id: 3, school: "부산대학교", dept: "인공지능전공", est: "국립", type: "대학교", district: "금정구", specialty: "인공지능공학", hub: "연구&엘리트 Hub" },
+            { id: 4, school: "부산대학교", dept: "디자인테크놀로지전공", est: "국립", type: "대학교", district: "금정구", specialty: "응용소프트웨어공학", hub: "연구&엘리트 Hub" },
+            { id: 5, school: "국립한국해양대학교", dept: "컴퓨터공학전공 (인공지능공학부)", est: "국립", type: "대학교", district: "영도구", specialty: "전산학·컴퓨터공학", hub: "해양IT 특화 Hub" },
+            { id: 6, school: "국립부경대학교", dept: "컴퓨터공학전공", est: "국립", type: "대학교", district: "남구", specialty: "전산학·컴퓨터공학", hub: "기관협력 Hub" },
+            { id: 7, school: "경성대학교", dept: "컴퓨터공학계열", est: "사립", type: "대학교", district: "남구", specialty: "전산학·컴퓨터공학", hub: "기관협력 Hub" },
+            { id: 8, school: "동명대학교", dept: "컴퓨터공학계열", est: "사립", type: "대학교", district: "남구", specialty: "전산학·컴퓨터공학", hub: "기관협력 Hub" },
+            { id: 9, school: "동아대학교", dept: "컴퓨터공학과", est: "사립", type: "대학교", district: "사하구", specialty: "전산학·컴퓨터공학", hub: "서부산 거점 Hub" },
+            { id: 10, school: "동의대학교", dept: "컴퓨터공학과", est: "사립", type: "대학교", district: "부산진구", specialty: "전산학·컴퓨터공학", hub: "도심 실무 Hub" },
+            { id: 11, school: "신라대학교", dept: "컴퓨터공학계열", est: "사립", type: "대학교", district: "사상구", specialty: "전산학·컴퓨터공학", hub: "직업&디지털전환 Hub" },
+            { id: 12, school: "부산디지털대학교", dept: "컴퓨터/IT응용학과", est: "사립", type: "사이버대학", district: "사상구", specialty: "전산학·컴퓨터공학", hub: "원격&평생교육 Hub" },
+            { id: 13, school: "동서대학교", dept: "소프트웨어융합학부 1", est: "사립", type: "대학교", district: "사상구", specialty: "전산학·컴퓨터공학", hub: "직업&디지털전환 Hub" },
+            { id: 14, school: "동서대학교", dept: "소프트웨어융합학부 2", est: "사립", type: "대학교", district: "사상구", specialty: "전산학·컴퓨터공학", hub: "직업&디지털전환 Hub" },
+            { id: 15, school: "부산외국어대학교", dept: "컴퓨터공학과", est: "사립", type: "대학교", district: "금정구", specialty: "전산학·컴퓨터공학", hub: "연구&엘리트 Hub" }
+        ];
+
+        // Global Chart References
+        let establishmentChart, districtChart, specialtyChart;
+
+        window.onload = function() {
+            initCharts();
+            renderTable(departmentsData);
+
+            // Export button event
+            document.getElementById('exportReportBtn').addEventListener('click', openExportModal);
+        };
+
+        // Scroll Helper
+        function scrollToSection(id) {
+            const el = document.getElementById(id);
+            if(el) {
+                el.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        // Initialize Chart.js Instances
+        function initCharts() {
+            // Chart 1: Establishment Pie
+            const ctxEst = document.getElementById('establishmentChart').getContext('2d');
+            establishmentChart = new Chart(ctxEst, {
+                type: 'doughnut',
+                data: {
+                    labels: ['국립 대학교 (6)', '사립 대학교 (8)', '사립 사이버대 (1)'],
+                    datasets: [{
+                        data: [6, 8, 1],
+                        backgroundColor: ['#2563eb', '#6366f1', '#10b981'],
+                        borderWidth: 2,
+                        borderColor: '#ffffff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { font: { size: 11, family: 'Noto Sans KR' } } }
+                    },
+                    cutout: '65%'
+                }
+            });
+
+            // Chart 2: District Horizontal Bar
+            const ctxDist = document.getElementById('districtChart').getContext('2d');
+            districtChart = new Chart(ctxDist, {
+                type: 'bar',
+                data: {
+                    labels: ['금정구', '사상구', '남구', '영도구', '사하구', '부산진구'],
+                    datasets: [{
+                        label: '학과 수',
+                        data: [5, 4, 3, 1, 1, 1],
+                        backgroundColor: ['#2563eb', '#0d9488', '#4f46e5', '#64748b', '#64748b', '#64748b'],
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    indexAxis: 'y',
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        x: { beginAtZero: true, ticks: { stepSize: 1, font: { size: 10 } } },
+                        y: { ticks: { font: { size: 11, family: 'Noto Sans KR' } } }
+                    }
+                }
+            });
+
+            // Chart 3: Specialty Doughnut
+            const ctxSpec = document.getElementById('specialtyChart').getContext('2d');
+            specialtyChart = new Chart(ctxSpec, {
+                type: 'pie',
+                data: {
+                    labels: ['전산학·컴퓨터공학 (13)', '인공지능공학 (1)', '응용소프트웨어공학 (1)'],
+                    datasets: [{
+                        data: [13, 1, 1],
+                        backgroundColor: ['#3b82f6', '#818cf8', '#2dd4bf'],
+                        borderWidth: 2,
+                        borderColor: '#ffffff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { font: { size: 10, family: 'Noto Sans KR' } } }
+                    }
+                }
+            });
+        }
+
+        // Render Table Data
+        function renderTable(data) {
+            const tbody = document.getElementById('departmentTableBody');
+            tbody.innerHTML = '';
+
+            document.getElementById('tableCount').innerText = data.length;
+
+            if (data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="8" class="p-6 text-center text-slate-400">검색 조건에 일치하는 학과가 없습니다.</td></tr>`;
+                return;
+            }
+
+            data.forEach((item, index) => {
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-slate-50 transition-colors';
+
+                const estBadgeClass = item.est === '국립' ? 'bg-blue-100 text-blue-800' : 'bg-slate-100 text-slate-700';
+                const specBadgeClass = item.specialty === '인공지능공학' ? 'bg-indigo-100 text-indigo-800 font-bold' : 
+                                       (item.specialty === '응용소프트웨어공학' ? 'bg-teal-100 text-teal-800 font-bold' : 'bg-slate-100 text-slate-600');
+
+                tr.innerHTML = `
+                    <td class="p-3 text-slate-400 font-mono">${index + 1}</td>
+                    <td class="p-3 font-semibold text-slate-900">${item.school}</td>
+                    <td class="p-3 font-medium text-slate-800">${item.dept}</td>
+                    <td class="p-3"><span class="px-2 py-0.5 rounded text-[11px] font-medium ${estBadgeClass}">${item.est}</span></td>
+                    <td class="p-3 text-slate-600">${item.type}</td>
+                    <td class="p-3 font-medium text-slate-700">${item.district}</td>
+                    <td class="p-3"><span class="px-2 py-0.5 rounded text-[11px] ${specBadgeClass}">${item.specialty}</span></td>
+                    <td class="p-3 text-slate-500 text-[11px]">${item.hub}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Filter Table Logic
+        function filterTable() {
+            const searchVal = document.getElementById('searchInput').value.toLowerCase().trim();
+            const estVal = document.getElementById('establishmentFilter').value;
+            const distVal = document.getElementById('districtFilter').value;
+            const specVal = document.getElementById('specialtyFilter').value;
+
+            const filtered = departmentsData.filter(item => {
+                const matchesSearch = item.school.toLowerCase().includes(searchVal) || item.dept.toLowerCase().includes(searchVal);
+                const matchesEst = estVal === '' || item.est === estVal;
+                const matchesDist = distVal === '' || item.district === distVal;
+                const matchesSpec = specVal === '' || item.specialty === specVal;
+
+                return matchesSearch && matchesEst && matchesDist && matchesSpec;
+            });
+
+            renderTable(filtered);
+        }
+
+        // Switch Strategy Tab
+        function switchStrategyTab(tab) {
+            const policyBtn = document.getElementById('tabPolicyBtn');
+            const studentBtn = document.getElementById('tabStudentBtn');
+            const policyContent = document.getElementById('policyTabContent');
+            const studentContent = document.getElementById('studentTabContent');
+
+            if (tab === 'policy') {
+                policyBtn.className = 'px-4 py-1.5 rounded-lg text-xs font-bold transition bg-blue-600 text-white';
+                studentBtn.className = 'px-4 py-1.5 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white';
+                policyContent.classList.remove('hidden');
+                studentContent.classList.add('hidden');
+            } else {
+                studentBtn.className = 'px-4 py-1.5 rounded-lg text-xs font-bold transition bg-blue-600 text-white';
+                policyBtn.className = 'px-4 py-1.5 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white';
+                studentContent.classList.remove('hidden');
+                policyContent.classList.add('hidden');
+            }
+        }
+
+        // Checklist Progress
+        function updateChecklistProgress() {
+            const checkboxes = document.querySelectorAll('#strategy input[type="checkbox"]');
+            let checkedCount = 0;
+            checkboxes.forEach(cb => { if(cb.checked) checkedCount++; });
+
+            const percent = Math.round((checkedCount / checkboxes.length) * 100);
+            document.getElementById('progressPercent').innerText = `${percent}%`;
+            document.getElementById('progressBar').style.width = `${percent}%`;
+        }
+
+        // Modal for Report Export
+        function openExportModal() {
+            const modal = document.getElementById('exportModal');
+            const textarea = document.getElementById('summaryTextarea');
+
+            const summaryContent = 
+`[부산 지역 IT 및 인공지능 관련 학과 현황 분석 요약 리포트]
+
+1. 총 학과 규모: 15개 학과 (부산권 10개 대학)
+2. 설립 주체별 분포:
+   - 국립 대학교: 6개 (40.0%) - 부산대, 한국해양대, 부경대 (AI/SW 세부전공 독점)
+   - 사립 대학교: 8개 (53.3%) - 경성대, 동명대, 동아대, 동의대, 신라대, 동서대, 부산외대
+   - 사립 사이버대학: 1개 (6.7%) - 부산디지털대 (원격 및 평생교육 공급)
+
+3. 지리적 3대 거점 밀집도:
+   - 금정구 (5개, 33.3%): 연구 및 엘리트 Hub (부산대, 부산외대)
+   - 사상구 (4개, 26.7%): 직업 및 디지털 전환 Hub (동서대, 신라대, 부산디지털대)
+   - 남구 (3개, 20.0%): 기관 협력 Hub (부경대, 경성대, 동명대)
+   - 기타 (각 1개): 영도구(한국해양대), 사하구(동아대), 부산진구(동의대)
+
+4. 전공 분류 현황:
+   - 전산학·컴퓨터공학: 13개 학과 (86.7%)
+   - 인공지능공학: 1개 학과 (6.7% - 부산대)
+   - 응용소프트웨어공학: 1개 학과 (6.7% - 부산대)
+
+5. 핵심 시사점:
+   - 부산대학교가 유일하게 AI/SW/CS 3개 분류 전공을 선제 보유.
+   - 한국해양대(인공지능공학부) 사례처럼 브랜드 명칭과 행정 표준분류 간 시차 존재.
+   - 권역별 클러스터 차등 지원 정책 및 행정 분류 현실화가 요구됨.`;
+
+            textarea.value = summaryContent;
+            modal.classList.remove('hidden');
+        }
+
+        function closeExportModal() {
+            document.getElementById('exportModal').classList.add('hidden');
+        }
+
+        function copySummaryText() {
+            const textarea = document.getElementById('summaryTextarea');
+            textarea.select();
+            document.execCommand('copy');
+            
+            // Custom toast notification instead of alert
+            const btn = event.currentTarget;
+            const originalHTML = btn.innerHTML;
+            btn.innerHTML = `<i class="fa-solid fa-check"></i> 복사 완료!`;
+            btn.classList.replace('bg-blue-600', 'bg-emerald-600');
+
+            setTimeout(() => {
+                btn.innerHTML = originalHTML;
+                btn.classList.replace('bg-emerald-600', 'bg-blue-600');
+            }, 2000);
+        }
+    </script>
+</body>
+</html>
