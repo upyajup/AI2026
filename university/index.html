@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2026 대학 빅데이터 분석 & 맞춤 추천 플랫폼</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Font (Inter & Noto Sans KR) -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #f8fafc;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 9999px;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8, #0284c7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="text-slate-800 bg-slate-50 min-h-screen flex flex-col antialiased">
+
+    <!-- Navigation Header -->
+    <header class="bg-slate-900 text-white sticky top-0 z-50 shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <a href="../index.html" class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center text-white shadow-lg shadow-blue-500/30 hover:scale-105 transition-transform" title="홈으로 이동">
+                    <i class="fa-solid fa-graduation-cap text-lg"></i>
+                </a>
+                <div>
+                    <h1 class="font-bold text-lg leading-tight tracking-tight">UnivMetrics 2026</h1>
+                    <p class="text-xs text-slate-400">인공지능 일반(입결) Top 20 대학 분석 솔루션</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center space-x-3">
+                <a href="../index.html" class="px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition flex items-center gap-2">
+                    <i class="fa-solid fa-house text-blue-400"></i>
+                    <span>홈</span>
+                </a>
+                <button onclick="toggleDataModal()" class="px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition flex items-center gap-2">
+                    <i class="fa-solid fa-file-import text-blue-400"></i>
+                    <span>데이터 파일 / 직접 관리</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+
+        <!-- Hero & Controls Section -->
+        <section class="bg-white rounded-2xl p-6 sm:p-8 shadow-sm border border-slate-200/80">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                <div>
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-semibold mb-3 border border-blue-100">
+                        <i class="fa-solid fa-chart-line"></i> 인공지능 일반 입결 Top 20 분석
+                    </div>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+                        인공지능 계열 20개 대학 지표 분석 및 추천
+                    </h2>
+                    <p class="text-sm text-slate-600 mt-2 max-w-2xl">
+                        입결 Top 20 대학의 등록금, 경쟁률, 취업률 데이터를 기반으로 양끝 상/하위 그룹을 시각화하고 진학 목적별 최적 대학을 제시합니다.
+                    </p>
+                </div>
+
+                <!-- Controls -->
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 flex flex-col gap-3 min-w-[240px]">
+                    <label class="text-xs font-bold text-slate-700 flex items-center gap-1.5">
+                        <i class="fa-solid fa-filter text-blue-600"></i> 경쟁률 기준 설정
+                    </label>
+                    <select id="competitionTypeSelect" onchange="updateAllVisuals()" class="w-full text-xs bg-white border border-slate-300 rounded-lg px-3 py-2 font-medium focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                        <option value="susi">수시 경쟁률 기준</option>
+                        <option value="jungsi">정시 경쟁률 기준</option>
+                        <option value="avg" selected>종합 (수시+정시 평균) 기준</option>
+                    </select>
+                    <span class="text-[11px] text-slate-500">현재 <span id="dataCountBadge" class="font-bold text-blue-600">20개</span> 대학 데이터 로드됨</span>
+                </div>
+            </div>
+
+            <!-- Key Insight Quick Stats -->
+            <div id="quickStatsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-6 pt-6 border-t border-slate-100">
+                <!-- Dynamic Quick Stats Cards -->
+            </div>
+        </section>
+
+        <!-- SECTION 1: 3 Graphs excluding middle 10 (showing Top 5 and Bottom 5) -->
+        <section class="space-y-6">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 pb-4">
+                <div>
+                    <h3 class="text-xl font-bold text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-chart-bar text-blue-600"></i> 3대 주요 지표 순위 비교 (Top 5 vs Bottom 5)
+                    </h3>
+                    <p class="text-xs text-slate-500 mt-1">
+                        전체 대학 중 가운데 10개 대학을 제외하고, <span class="font-semibold text-slate-700">양끝 5개 항목(최상위 5 & 최하위 5)</span>만 비교한 그래프입니다.
+                    </p>
+                </div>
+                <div class="flex items-center gap-4 text-xs font-medium">
+                    <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-emerald-500 inline-block"></span> 상위 5개</span>
+                    <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-rose-500 inline-block"></span> 하위 5개</span>
+                </div>
+            </div>
+
+            <!-- Charts Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Graph 1: 등록금 순위 (하위 5개: 저렴 / 상위 5개: 비쌈) -->
+                <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200 flex flex-col">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <span class="text-[11px] font-bold text-blue-600 uppercase tracking-wider">Tuition Fee</span>
+                            <h4 class="font-bold text-slate-900 text-base">등록금 순위 (연간)</h4>
+                        </div>
+                        <span class="text-xs px-2.5 py-1 rounded-md bg-slate-100 font-medium text-slate-600">단위: 원</span>
+                    </div>
+                    <div class="relative flex-grow min-h-[280px]">
+                        <canvas id="tuitionChart"></canvas>
+                    </div>
+                    <p class="text-xs text-slate-500 mt-3 pt-3 border-t border-slate-100 text-center">
+                        💡 가장 저렴한 5개 대학 vs 가장 부담이 큰 5개 대학
+                    </p>
+                </div>
+
+                <!-- Graph 2: 경쟁률 순위 -->
+                <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200 flex flex-col">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <span class="text-[11px] font-bold text-indigo-600 uppercase tracking-wider">Competition Rate</span>
+                            <h4 class="font-bold text-slate-900 text-base">경쟁률 순위</h4>
+                        </div>
+                        <span class="text-xs px-2.5 py-1 rounded-md bg-slate-100 font-medium text-slate-600">단위: :1</span>
+                    </div>
+                    <div class="relative flex-grow min-h-[280px]">
+                        <canvas id="competitionChart"></canvas>
+                    </div>
+                    <p class="text-xs text-slate-500 mt-3 pt-3 border-t border-slate-100 text-center">
+                        🔥 가장 높은 경쟁률 5개 대학 vs 가장 낮은 5개 대학
+                    </p>
+                </div>
+
+                <!-- Graph 3: 취업률 순위 -->
+                <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200 flex flex-col">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <span class="text-[11px] font-bold text-emerald-600 uppercase tracking-wider">Employment Rate</span>
+                            <h4 class="font-bold text-slate-900 text-base">취업률 순위</h4>
+                        </div>
+                        <span class="text-xs px-2.5 py-1 rounded-md bg-slate-100 font-medium text-slate-600">단위: %</span>
+                    </div>
+                    <div class="relative flex-grow min-h-[280px]">
+                        <canvas id="employmentChart"></canvas>
+                    </div>
+                    <p class="text-xs text-slate-500 mt-3 pt-3 border-t border-slate-100 text-center">
+                        💼 가장 높은 취업률 5개 대학 vs 가장 낮은 5개 대학
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: Student Target Recommendations -->
+        <section class="space-y-6">
+            <div class="border-b border-slate-200 pb-4">
+                <h3 class="text-xl font-bold text-slate-900 flex items-center gap-2">
+                    <i class="fa-solid fa-user-graduate text-blue-600"></i> 학생 진학 목적별 맞춤 추천 대학
+                </h3>
+                <p class="text-xs text-slate-500 mt-1">
+                    학생의 성향 및 최우선 가치관(경쟁률/선호도, 취업률, 등록금 부담)에 따른 3가지 맞춤 추천 리스트입니다.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+                <!-- 1. 상위권 학생 추천 (경쟁률 순위) -->
+                <div class="bg-white rounded-2xl border border-indigo-100 shadow-sm overflow-hidden flex flex-col">
+                    <div class="bg-gradient-to-r from-indigo-900 to-indigo-800 p-5 text-white">
+                        <div class="flex items-center justify-between">
+                            <span class="px-2.5 py-1 rounded-full bg-indigo-500/30 text-indigo-200 text-xs font-semibold border border-indigo-400/30">
+                                ⭐ 높은 선호도/경쟁률
+                            </span>
+                            <i class="fa-solid fa-fire text-amber-400 text-xl"></i>
+                        </div>
+                        <h4 class="text-lg font-bold mt-2">상위 학생 추천 대학</h4>
+                        <p class="text-xs text-indigo-200 mt-1">입시 경쟁률이 높아 치열한 선호도를 보이는 대학</p>
+                    </div>
+
+                    <div class="p-5 flex-grow space-y-3 custom-scrollbar overflow-y-auto max-h-[420px]" id="recommendTargetCompetition">
+                        <!-- Dynamic Item Insert -->
+                    </div>
+                </div>
+
+                <!-- 2. 취업 목적 입학 학생 추천 (취업률 순위) -->
+                <div class="bg-white rounded-2xl border border-emerald-100 shadow-sm overflow-hidden flex flex-col">
+                    <div class="bg-gradient-to-r from-emerald-900 to-teal-800 p-5 text-white">
+                        <div class="flex items-center justify-between">
+                            <span class="px-2.5 py-1 rounded-full bg-emerald-500/30 text-emerald-200 text-xs font-semibold border border-emerald-400/30">
+                                💼 뛰어난 아웃풋
+                            </span>
+                            <i class="fa-solid fa-briefcase text-emerald-300 text-xl"></i>
+                        </div>
+                        <h4 class="text-lg font-bold mt-2">취업 목적 학생 추천 대학</h4>
+                        <p class="text-xs text-emerald-200 mt-1">졸업 후 취업률 지표가 우수한 실용 중심 대학</p>
+                    </div>
+
+                    <div class="p-5 flex-grow space-y-3 custom-scrollbar overflow-y-auto max-h-[420px]" id="recommendTargetEmployment">
+                        <!-- Dynamic Item Insert -->
+                    </div>
+                </div>
+
+                <!-- 3. 재정 우선 학생 추천 (등록금 최저 순위) -->
+                <div class="bg-white rounded-2xl border border-amber-100 shadow-sm overflow-hidden flex flex-col">
+                    <div class="bg-gradient-to-r from-amber-900 to-orange-800 p-5 text-white">
+                        <div class="flex items-center justify-between">
+                            <span class="px-2.5 py-1 rounded-full bg-amber-500/30 text-amber-200 text-xs font-semibold border border-amber-400/30">
+                                💰 경제적 가성비
+                            </span>
+                            <i class="fa-solid fa-piggy-bank text-amber-300 text-xl"></i>
+                        </div>
+                        <h4 class="text-lg font-bold mt-2">재정 우선 학생 추천 대학</h4>
+                        <p class="text-xs text-amber-200 mt-1">학비 부담이 적고 국공립/장학 혜택이 우수한 대학</p>
+                    </div>
+
+                    <div class="p-5 flex-grow space-y-3 custom-scrollbar overflow-y-auto max-h-[420px]" id="recommendTargetTuition">
+                        <!-- Dynamic Item Insert -->
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- SECTION 3: Overall Best University Dashboard & Custom Weighting -->
+        <section class="bg-slate-900 text-white rounded-3xl p-6 sm:p-8 shadow-xl relative overflow-hidden">
+            <div class="absolute top-0 right-0 -mt-8 -mr-8 w-64 h-64 rounded-full bg-blue-600/20 blur-3xl pointer-events-none"></div>
+            <div class="absolute bottom-0 left-0 -mb-8 -ml-8 w-64 h-64 rounded-full bg-indigo-600/20 blur-3xl pointer-events-none"></div>
+
+            <div class="relative z-10 space-y-6">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-6">
+                    <div>
+                        <span class="px-3 py-1 rounded-full bg-blue-500/20 text-blue-400 text-xs font-bold border border-blue-500/30">
+                            🏆 Comprehensive Evaluation
+                        </span>
+                        <h3 class="text-2xl font-extrabold mt-2 text-white">종합 최우수 대학 시뮬레이터</h3>
+                        <p class="text-xs text-slate-400 mt-1">
+                            등록금, 경쟁률, 취업률 데이터를 표준 점수화(Z-Score/Min-Max)하여 종합 경쟁력이 가장 우수한 대학을 평가합니다.
+                        </p>
+                    </div>
+
+                    <!-- Weight Control Accordion/Sliders -->
+                    <div class="bg-slate-800/80 p-4 rounded-2xl border border-slate-700/80 max-w-md w-full space-y-3">
+                        <div class="text-xs font-bold text-slate-300 flex justify-between items-center">
+                            <span>가중치 커스텀 설정</span>
+                            <button onclick="resetWeights()" class="text-blue-400 hover:underline text-[11px]">초기화</button>
+                        </div>
+                        <div class="space-y-2 text-xs">
+                            <div>
+                                <div class="flex justify-between text-slate-400 mb-1">
+                                    <span>💰 등록금 저렴함 가중치</span>
+                                    <span id="weightTuitionVal" class="font-bold text-white">35%</span>
+                                </div>
+                                <input type="range" id="weightTuition" min="0" max="100" value="35" oninput="updateWeights()" class="w-full accent-blue-500 h-1.5 bg-slate-700 rounded-lg cursor-pointer">
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-slate-400 mb-1">
+                                    <span>💼 취업률 가중치</span>
+                                    <span id="weightEmploymentVal" class="font-bold text-white">40%</span>
+                                </div>
+                                <input type="range" id="weightEmployment" min="0" max="100" value="40" oninput="updateWeights()" class="w-full accent-emerald-500 h-1.5 bg-slate-700 rounded-lg cursor-pointer">
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-slate-400 mb-1">
+                                    <span>🔥 경쟁률/선호도 가중치</span>
+                                    <span id="weightCompetitionVal" class="font-bold text-white">25%</span>
+                                </div>
+                                <input type="range" id="weightCompetition" min="0" max="100" value="25" oninput="updateWeights()" class="w-full accent-indigo-500 h-1.5 bg-slate-700 rounded-lg cursor-pointer">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Comprehensive Top Winner Showcase & Ranking Table Grid -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- #1 Winner Card Showcase -->
+                    <div id="overallWinnerCard" class="bg-gradient-to-br from-slate-800 to-slate-800/90 rounded-2xl p-6 border border-blue-500/40 shadow-xl flex flex-col justify-between">
+                        <!-- Dynamic Winner Content -->
+                    </div>
+
+                    <!-- Overall Leaderboard Table -->
+                    <div class="lg:col-span-2 bg-slate-800/60 rounded-2xl p-5 border border-slate-700/60 flex flex-col">
+                        <h4 class="text-sm font-bold text-slate-200 mb-3 flex items-center justify-between">
+                            <span><i class="fa-solid fa-list-ol text-blue-400 mr-2"></i>종합 점수 랭킹 Top 10</span>
+                            <span class="text-xs font-normal text-slate-400">100점 만점 환산</span>
+                        </h4>
+                        <div class="overflow-x-auto custom-scrollbar flex-grow">
+                            <table class="w-full text-left text-xs text-slate-300">
+                                <thead class="text-[11px] uppercase bg-slate-900/60 text-slate-400 border-b border-slate-700">
+                                    <tr>
+                                        <th class="py-2.5 px-3">순위</th>
+                                        <th class="py-2.5 px-3">대학명</th>
+                                        <th class="py-2.5 px-3">등록금</th>
+                                        <th class="py-2.5 px-3">취업률</th>
+                                        <th class="py-2.5 px-3">경쟁률</th>
+                                        <th class="py-2.5 px-3 text-right">종합 점수</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="overallTableBody" class="divide-y divide-slate-700/50">
+                                    <!-- Dynamic Rows -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- All Universities Data Table Section -->
+        <section class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <div>
+                    <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-database text-blue-600"></i> 전체 대학 원본 데이터
+                    </h3>
+                    <p class="text-xs text-slate-500">분석에 사용된 전체 대학 데이터셋 요약표입니다.</p>
+                </div>
+                <div class="relative">
+                    <input type="text" id="searchInput" oninput="filterTable()" placeholder="대학명 검색..." class="text-xs bg-slate-50 border border-slate-300 rounded-lg pl-8 pr-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-blue-500 w-48">
+                    <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-2.5 text-slate-400 text-xs"></i>
+                </div>
+            </div>
+
+            <div class="overflow-x-auto custom-scrollbar">
+                <table class="w-full text-left text-xs text-slate-700">
+                    <thead class="bg-slate-100 text-slate-600 uppercase text-[11px] font-bold">
+                        <tr>
+                            <th class="py-3 px-4 rounded-l-lg">등록 순번</th>
+                            <th class="py-3 px-4">대학명</th>
+                            <th class="py-3 px-4">연간 등록금</th>
+                            <th class="py-3 px-4">취업률</th>
+                            <th class="py-3 px-4">수시 경쟁률</th>
+                            <th class="py-3 px-4">정시 경쟁률</th>
+                            <th class="py-3 px-4 rounded-r-lg">종합 평균 경쟁률</th>
+                        </tr>
+                    </thead>
+                    <tbody id="fullDataTableBody" class="divide-y divide-slate-100">
+                        <!-- Dynamic Content -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 py-8 border-t border-slate-800 text-xs text-center">
+        <div class="max-w-7xl mx-auto px-4 space-y-2">
+            <p class="font-semibold text-slate-300">UnivMetrics 대학 빅데이터 시각화 및 맞춤 추천 플랫폼</p>
+            <p class="text-slate-500">본 분석 자료는 대학 알리미 및 공개 입시 지표 데이터를 기반으로 산출된 가공 지표입니다.</p>
+            <p class="text-slate-600">© 2026 UnivMetrics All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- File Import & Data Modal -->
+    <div id="dataModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+        <div class="bg-white rounded-2xl max-w-2xl w-full p-6 shadow-2xl border border-slate-200 space-y-4">
+            <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+                <h3 class="font-bold text-slate-900 text-base flex items-center gap-2">
+                    <i class="fa-solid fa-file-code text-blue-600"></i> 대학 데이터 직접 관리 및 파일 가져오기
+                </h3>
+                <button onclick="toggleDataModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+
+            <div class="space-y-3">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">JSON / CSV 파일 업로드</label>
+                    <input type="file" id="fileInput" accept=".csv, .json, .txt" onchange="handleFileUpload(event)" class="text-xs text-slate-500 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">텍스트 데이터 입력 (JSON 형식 지원)</label>
+                    <textarea id="jsonTextArea" rows="8" class="w-full text-xs font-mono bg-slate-50 border border-slate-300 rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="JSON 형태의 대학 데이터를 입력하세요..."></textarea>
+                </div>
+            </div>
+
+            <div class="flex justify-between items-center pt-2 border-t border-slate-100">
+                <button onclick="restoreDefaultData()" class="px-4 py-2 text-xs font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-lg transition">
+                    기본 20개 대학 데이터로 복원
+                </button>
+                <div class="space-x-2">
+                    <button onclick="toggleDataModal()" class="px-4 py-2 text-xs font-semibold text-slate-500 hover:bg-slate-100 rounded-lg transition">취소</button>
+                    <button onclick="applyCustomData()" class="px-4 py-2 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition shadow-md shadow-blue-500/20">데이터 적용하기</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Default Dataset: AI/SW Major Top 1~20 General Universities Data
+        const DEFAULT_UNIVERSITIES = [
+            // Top 1~10 General Universities (Excluding Special Institutes like KAIST/POSTECH)
+            { rank: 1, name: "서울대학교(AI/컴공)", tuition: 6011000, employment: 75.2, susi: 6.85, jungsi: 3.12 },
+            { rank: 2, name: "연세대학교(인공지능)", tuition: 9150000, employment: 74.0, susi: 14.30, jungsi: 4.80 },
+            { rank: 3, name: "고려대학교(인공지능)", tuition: 8260000, employment: 76.6, susi: 14.90, jungsi: 4.20 },
+            { rank: 4, name: "성균관대(소프트웨어)", tuition: 8380000, employment: 78.6, susi: 28.50, jungsi: 6.10 },
+            { rank: 5, name: "한양대(컴퓨터소프트웨어)", tuition: 8500000, employment: 75.8, susi: 26.40, jungsi: 5.50 },
+            { rank: 6, name: "서강대(인공지능)", tuition: 7980000, employment: 72.4, susi: 25.10, jungsi: 6.80 },
+            { rank: 7, name: "중앙대(AI학과)", tuition: 8020000, employment: 71.9, susi: 24.20, jungsi: 10.80 },
+            { rank: 8, name: "경희대(인공지능)", tuition: 7930000, employment: 70.2, susi: 22.80, jungsi: 5.90 },
+            { rank: 9, name: "이화여대(AI융합)", tuition: 8690000, employment: 71.0, susi: 15.60, jungsi: 5.10 },
+            { rank: 10, name: "건국대(컴퓨터공학)", tuition: 8230000, employment: 70.5, susi: 20.40, jungsi: 6.30 },
+            
+            // Top 11~20 Universities (User File Data: 인공지능 일반 입결)
+            { rank: 11, name: "동국대(AI)", tuition: 9631900, employment: 60.7, susi: 16.79, jungsi: 4.11 },
+            { rank: 12, name: "숭실대", tuition: 9256100, employment: 67.7, susi: 14.65, jungsi: 5.45 },
+            { rank: 13, name: "부산대", tuition: 4728000, employment: 57.5, susi: 6.77, jungsi: 2.55 },
+            { rank: 14, name: "홍익대", tuition: 9347600, employment: 65.6, susi: 12.22, jungsi: 7.52 },
+            { rank: 15, name: "서울과학기술대", tuition: 5585300, employment: 63.6, susi: 10.97, jungsi: 4.80 },
+            { rank: 16, name: "아주대", tuition: 9357400, employment: 69.3, susi: 14.32, jungsi: 6.92 },
+            { rank: 17, name: "숙명여자대학교", tuition: 9860900, employment: 62.5, susi: 10.09, jungsi: 6.70 },
+            { rank: 18, name: "경북대학교", tuition: 3318000, employment: 55.0, susi: 11.29, jungsi: 7.36 },
+            { rank: 19, name: "국민대학교(SW)", tuition: 9005100, employment: 66.5, susi: 27.25, jungsi: 7.40 },
+            { rank: 20, name: "인하대", tuition: 8878100, employment: 68.5, susi: 10.23, jungsi: 3.71 }
+        ];
+
+        let universityData = [...DEFAULT_UNIVERSITIES];
+        let tuitionChartInstance = null;
+        let competitionChartInstance = null;
+        let employmentChartInstance = null;
+
+        // Custom weights state
+        let weights = {
+            tuition: 0.35,
+            employment: 0.40,
+            competition: 0.25
+        };
+
+        function getCompetitionVal(item, type) {
+            if (type === 'susi') return item.susi;
+            if (type === 'jungsi') return item.jungsi;
+            return parseFloat(((item.susi + item.jungsi) / 2).toFixed(2));
+        }
+
+        function formatCurrency(val) {
+            if (val === 0) return "무료 (국비)";
+            return val.toLocaleString() + "원";
+        }
+
+        function updateAllVisuals() {
+            renderQuickStats();
+            renderCharts();
+            renderTargetRecommendations();
+            renderOverallDashboard();
+            renderFullTable();
+        }
+
+        function renderQuickStats() {
+            const compType = document.getElementById('competitionTypeSelect').value;
+            
+            // Find lowest tuition
+            const lowestTuition = [...universityData].sort((a,b) => a.tuition - b.tuition)[0];
+            // Find highest employment
+            const highestEmployment = [...universityData].sort((a,b) => b.employment - a.employment)[0];
+            // Find highest competition
+            const highestComp = [...universityData].sort((a,b) => getCompetitionVal(b, compType) - getCompetitionVal(a, compType))[0];
+            // Average Tuition
+            const avgTuition = Math.round(universityData.reduce((acc, cur) => acc + cur.tuition, 0) / universityData.length);
+
+            const grid = document.getElementById('quickStatsGrid');
+            grid.innerHTML = `
+                <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+                    <span class="text-[11px] font-bold text-slate-500 uppercase">최저 등록금 대학</span>
+                    <div class="text-base font-extrabold text-slate-900 mt-1">${lowestTuition.name}</div>
+                    <div class="text-xs text-blue-600 font-semibold">${formatCurrency(lowestTuition.tuition)}</div>
+                </div>
+                <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+                    <span class="text-[11px] font-bold text-slate-500 uppercase">최고 취업률 대학</span>
+                    <div class="text-base font-extrabold text-slate-900 mt-1">${highestEmployment.name}</div>
+                    <div class="text-xs text-emerald-600 font-semibold">${highestEmployment.employment}%</div>
+                </div>
+                <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+                    <span class="text-[11px] font-bold text-slate-500 uppercase">최고 경쟁률 대학</span>
+                    <div class="text-base font-extrabold text-slate-900 mt-1">${highestComp.name}</div>
+                    <div class="text-xs text-indigo-600 font-semibold">${getCompetitionVal(highestComp, compType)} : 1</div>
+                </div>
+                <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+                    <span class="text-[11px] font-bold text-slate-500 uppercase">분석 대학 평균 등록금</span>
+                    <div class="text-base font-extrabold text-slate-900 mt-1">${formatCurrency(avgTuition)}</div>
+                    <div class="text-xs text-slate-500 font-medium">총 ${universityData.length}개 대학 평균</div>
+                </div>
+            `;
+            document.getElementById('dataCountBadge').innerText = `${universityData.length}개`;
+        }
+
+        // Helper function to extract Top 5 and Bottom 5 (excluding middle 10 if dataset is >= 10)
+        function getTopAndBottomFive(sortedArray) {
+            const total = sortedArray.length;
+            if (total <= 10) {
+                // If 10 or fewer items, show top half and bottom half
+                const mid = Math.ceil(total / 2);
+                return {
+                    items: sortedArray,
+                    topIndices: Array.from({length: mid}, (_, i) => i),
+                    bottomIndices: Array.from({length: total - mid}, (_, i) => mid + i)
+                };
+            }
+            // For N >= 10 (e.g. 20), take top 5 and bottom 5 (excluding middle total-10 items)
+            const top5 = sortedArray.slice(0, 5);
+            const bottom5 = sortedArray.slice(total - 5, total);
+            return {
+                items: [...top5, ...bottom5],
+                topCount: top5.length,
+                bottomCount: bottom5.length
+            };
+        }
+
+        function renderCharts() {
+            const compType = document.getElementById('competitionTypeSelect').value;
+
+            // 1. Tuition Chart (Lowest tuition = Best, so sorted ascending: cheap -> expensive)
+            const sortedTuition = [...universityData].sort((a,b) => a.tuition - b.tuition);
+            const tuitionSplit = getTopAndBottomFive(sortedTuition);
+
+            const tuitionLabels = tuitionSplit.items.map((d, i) => `${i < tuitionSplit.topCount ? '★ ' : ''}${d.name}`);
+            const tuitionValues = tuitionSplit.items.map(d => d.tuition);
+            const tuitionColors = tuitionSplit.items.map((_, i) => i < tuitionSplit.topCount ? '#10b981' : '#f43f5e');
+
+            if (tuitionChartInstance) tuitionChartInstance.destroy();
+            const ctx1 = document.getElementById('tuitionChart').getContext('2d');
+            tuitionChartInstance = new Chart(ctx1, {
+                type: 'bar',
+                data: {
+                    labels: tuitionLabels,
+                    datasets: [{
+                        label: '연간 등록금 (원)',
+                        data: tuitionValues,
+                        backgroundColor: tuitionColors,
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: (ctx) => ` 등록금: ${formatCurrency(ctx.raw)}`
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            ticks: {
+                                callback: (v) => (v / 10000) + '만원',
+                                font: { size: 10 }
+                            }
+                        },
+                        y: { ticks: { font: { size: 11, weight: 'bold' } } }
+                    }
+                }
+            });
+
+            // 2. Competition Chart (Highest competition = Best, sorted descending)
+            const sortedComp = [...universityData].sort((a,b) => getCompetitionVal(b, compType) - getCompetitionVal(a, compType));
+            const compSplit = getTopAndBottomFive(sortedComp);
+
+            const compLabels = compSplit.items.map((d, i) => `${i < compSplit.topCount ? '★ ' : ''}${d.name}`);
+            const compValues = compSplit.items.map(d => getCompetitionVal(d, compType));
+            const compColors = compSplit.items.map((_, i) => i < compSplit.topCount ? '#6366f1' : '#f43f5e');
+
+            if (competitionChartInstance) competitionChartInstance.destroy();
+            const ctx2 = document.getElementById('competitionChart').getContext('2d');
+            competitionChartInstance = new Chart(ctx2, {
+                type: 'bar',
+                data: {
+                    labels: compLabels,
+                    datasets: [{
+                        label: '경쟁률 (:1)',
+                        data: compValues,
+                        backgroundColor: compColors,
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: (ctx) => ` 경쟁률: ${ctx.raw} : 1`
+                            }
+                        }
+                    },
+                    scales: {
+                        x: { ticks: { font: { size: 10 } } },
+                        y: { ticks: { font: { size: 11, weight: 'bold' } } }
+                    }
+                }
+            });
+
+            // 3. Employment Rate Chart (Highest employment = Best, sorted descending)
+            const sortedEmp = [...universityData].sort((a,b) => b.employment - a.employment);
+            const empSplit = getTopAndBottomFive(sortedEmp);
+
+            const empLabels = empSplit.items.map((d, i) => `${i < empSplit.topCount ? '★ ' : ''}${d.name}`);
+            const empValues = empSplit.items.map(d => d.employment);
+            const empColors = empSplit.items.map((_, i) => i < empSplit.topCount ? '#059669' : '#f43f5e');
+
+            if (employmentChartInstance) employmentChartInstance.destroy();
+            const ctx3 = document.getElementById('employmentChart').getContext('2d');
+            employmentChartInstance = new Chart(ctx3, {
+                type: 'bar',
+                data: {
+                    labels: empLabels,
+                    datasets: [{
+                        label: '취업률 (%)',
+                        data: empValues,
+                        backgroundColor: empColors,
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: (ctx) => ` 취업률: ${ctx.raw}%`
+                            }
+                        }
+                    },
+                    scales: {
+                        x: { min: 40, max: 100, ticks: { font: { size: 10 } } },
+                        y: { ticks: { font: { size: 11, weight: 'bold' } } }
+                    }
+                }
+            });
+        }
+
+        function renderTargetRecommendations() {
+            const compType = document.getElementById('competitionTypeSelect').value;
+
+            // 1. Target: High Competition (Top 5)
+            const topComp = [...universityData].sort((a,b) => getCompetitionVal(b, compType) - getCompetitionVal(a, compType)).slice(0, 5);
+            const containerComp = document.getElementById('recommendTargetCompetition');
+            containerComp.innerHTML = topComp.map((item, idx) => `
+                <div class="p-3 bg-indigo-50/60 rounded-xl border border-indigo-100 flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <span class="w-6 h-6 rounded-full bg-indigo-600 text-white font-extrabold text-xs flex items-center justify-center">${idx + 1}</span>
+                        <div>
+                            <div class="font-bold text-slate-900 text-sm">${item.name}</div>
+                            <div class="text-[11px] text-slate-500">수시 ${item.susi}:1 | 정시 ${item.jungsi}:1</div>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-xs font-black text-indigo-700">${getCompetitionVal(item, compType)} : 1</span>
+                        <div class="text-[10px] text-indigo-500 font-medium">선호도 최상위</div>
+                    </div>
+                </div>
+            `).join('');
+
+            // 2. Target: High Employment (Top 5)
+            const topEmp = [...universityData].sort((a,b) => b.employment - a.employment).slice(0, 5);
+            const containerEmp = document.getElementById('recommendTargetEmployment');
+            containerEmp.innerHTML = topEmp.map((item, idx) => `
+                <div class="p-3 bg-emerald-50/60 rounded-xl border border-emerald-100 flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <span class="w-6 h-6 rounded-full bg-emerald-600 text-white font-extrabold text-xs flex items-center justify-center">${idx + 1}</span>
+                        <div>
+                            <div class="font-bold text-slate-900 text-sm">${item.name}</div>
+                            <div class="text-[11px] text-slate-500">등록금: ${formatCurrency(item.tuition)}</div>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-xs font-black text-emerald-700">${item.employment}%</span>
+                        <div class="text-[10px] text-emerald-600 font-medium">취업률 우수</div>
+                    </div>
+                </div>
+            `).join('');
+
+            // 3. Target: Lowest Tuition (Top 5)
+            const topTuition = [...universityData].sort((a,b) => a.tuition - b.tuition).slice(0, 5);
+            const containerTuition = document.getElementById('recommendTargetTuition');
+            containerTuition.innerHTML = topTuition.map((item, idx) => `
+                <div class="p-3 bg-amber-50/60 rounded-xl border border-amber-100 flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <span class="w-6 h-6 rounded-full bg-amber-600 text-white font-extrabold text-xs flex items-center justify-center">${idx + 1}</span>
+                        <div>
+                            <div class="font-bold text-slate-900 text-sm">${item.name}</div>
+                            <div class="text-[11px] text-slate-500">취업률: ${item.employment}%</div>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-xs font-black text-amber-700">${formatCurrency(item.tuition)}</span>
+                        <div class="text-[10px] text-amber-600 font-medium">재정 부담 최하</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function calculateCompositeScores() {
+            const compType = document.getElementById('competitionTypeSelect').value;
+
+            // Min and Max values for normalization
+            const tuitions = universityData.map(u => u.tuition);
+            const employments = universityData.map(u => u.employment);
+            const competitions = universityData.map(u => getCompetitionVal(u, compType));
+
+            const minTuition = Math.min(...tuitions), maxTuition = Math.max(...tuitions);
+            const minEmp = Math.min(...employments), maxEmp = Math.max(...employments);
+            const minComp = Math.min(...competitions), maxComp = Math.max(...competitions);
+
+            return universityData.map(item => {
+                const compVal = getCompetitionVal(item, compType);
+                
+                // Tuition score: lower is better (0 to 1)
+                const tuitionScore = maxTuition === minTuition ? 1 : (maxTuition - item.tuition) / (maxTuition - minTuition);
+                // Employment score: higher is better (0 to 1)
+                const empScore = maxEmp === minEmp ? 1 : (item.employment - minEmp) / (maxEmp - minEmp);
+                // Competition score: higher is better (0 to 1)
+                const compScore = maxComp === minComp ? 1 : (compVal - minComp) / (maxComp - minComp);
+
+                // Weighted total (0 to 100)
+                const totalScore = (
+                    tuitionScore * weights.tuition +
+                    empScore * weights.employment +
+                    compScore * weights.competition
+                ) * 100;
+
+                return {
+                    ...item,
+                    compVal,
+                    tuitionScore: Math.round(tuitionScore * 100),
+                    empScore: Math.round(empScore * 100),
+                    compScore: Math.round(compScore * 100),
+                    totalScore: parseFloat(totalScore.toFixed(1))
+                };
+            }).sort((a,b) => b.totalScore - a.totalScore);
+        }
+
+        function renderOverallDashboard() {
+            const scoredList = calculateCompositeScores();
+            const winner = scoredList[0];
+
+            // Winner Showcase Card
+            const winnerCard = document.getElementById('overallWinnerCard');
+            winnerCard.innerHTML = `
+                <div>
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="px-2.5 py-1 rounded-full bg-amber-400 text-slate-900 text-xs font-black flex items-center gap-1 shadow-md">
+                            <i class="fa-solid fa-crown text-amber-900"></i> 종합 1위 우수 대학
+                        </span>
+                        <span class="text-xs text-blue-400 font-bold">${winner.totalScore}점 / 100점</span>
+                    </div>
+                    <h4 class="text-2xl font-black text-white mt-3">${winner.name}</h4>
+                    <p class="text-xs text-slate-300 mt-1 leading-relaxed">
+                        등록금 혜택, 높은 취업률, 균형 잡힌 입시 경쟁률을 종합 고려할 때 현재 설정된 가중치 기준 최우수 대학으로 평가되었습니다.
+                    </p>
+                </div>
+
+                <div class="mt-6 space-y-2 pt-4 border-t border-slate-700/80">
+                    <div class="flex justify-between text-xs">
+                        <span class="text-slate-400">💰 연간 등록금</span>
+                        <span class="font-bold text-white">${formatCurrency(winner.tuition)}</span>
+                    </div>
+                    <div class="flex justify-between text-xs">
+                        <span class="text-slate-400">💼 취업률</span>
+                        <span class="font-bold text-emerald-400">${winner.employment}%</span>
+                    </div>
+                    <div class="flex justify-between text-xs">
+                        <span class="text-slate-400">🔥 평균 경쟁률</span>
+                        <span class="font-bold text-indigo-400">${winner.compVal} : 1</span>
+                    </div>
+                </div>
+
+                <div class="mt-4 pt-3 bg-blue-600/20 rounded-xl p-3 border border-blue-500/30 text-center">
+                    <span class="text-xs font-bold text-blue-300">🎯 종합 경쟁률 & 가성비 밸런스 1위</span>
+                </div>
+            `;
+
+            // Table Render
+            const tbody = document.getElementById('overallTableBody');
+            tbody.innerHTML = scoredList.slice(0, 10).map((item, idx) => `
+                <tr class="${idx === 0 ? 'bg-blue-500/10 font-semibold' : 'hover:bg-slate-800/40'} transition">
+                    <td class="py-2.5 px-3">
+                        ${idx === 0 ? '<span class="text-amber-400 font-bold">🥇 1위</span>' : 
+                          idx === 1 ? '<span class="text-slate-300 font-bold">🥈 2위</span>' : 
+                          idx === 2 ? '<span class="text-amber-600 font-bold">🥉 3위</span>' : `${idx + 1}위`}
+                    </td>
+                    <td class="py-2.5 px-3 font-bold text-white">${item.name}</td>
+                    <td class="py-2.5 px-3 text-slate-300">${formatCurrency(item.tuition)}</td>
+                    <td class="py-2.5 px-3 text-emerald-400">${item.employment}%</td>
+                    <td class="py-2.5 px-3 text-indigo-400">${item.compVal}:1</td>
+                    <td class="py-2.5 px-3 text-right font-black text-blue-400 text-sm">${item.totalScore}점</td>
+                </tr>
+            `).join('');
+        }
+
+        function updateWeights() {
+            const wT = parseInt(document.getElementById('weightTuition').value);
+            const wE = parseInt(document.getElementById('weightEmployment').value);
+            const wC = parseInt(document.getElementById('weightCompetition').value);
+
+            const total = wT + wE + wC || 1;
+            weights.tuition = wT / total;
+            weights.employment = wE / total;
+            weights.competition = wC / total;
+
+            document.getElementById('weightTuitionVal').innerText = `${Math.round(weights.tuition * 100)}%`;
+            document.getElementById('weightEmploymentVal').innerText = `${Math.round(weights.employment * 100)}%`;
+            document.getElementById('weightCompetitionVal').innerText = `${Math.round(weights.competition * 100)}%`;
+
+            renderOverallDashboard();
+        }
+
+        function resetWeights() {
+            document.getElementById('weightTuition').value = 35;
+            document.getElementById('weightEmployment').value = 40;
+            document.getElementById('weightCompetition').value = 25;
+            updateWeights();
+        }
+
+        function renderFullTable() {
+            const tbody = document.getElementById('fullDataTableBody');
+            tbody.innerHTML = universityData.map((item, idx) => {
+                const avgComp = ((item.susi + item.jungsi) / 2).toFixed(2);
+                return `
+                    <tr class="hover:bg-slate-50 transition">
+                        <td class="py-3 px-4 font-semibold text-slate-500">${idx + 1}</td>
+                        <td class="py-3 px-4 font-bold text-slate-900">${item.name}</td>
+                        <td class="py-3 px-4 text-slate-700">${formatCurrency(item.tuition)}</td>
+                        <td class="py-3 px-4 font-semibold text-emerald-600">${item.employment}%</td>
+                        <td class="py-3 px-4 text-slate-600">${item.susi} : 1</td>
+                        <td class="py-3 px-4 text-slate-600">${item.jungsi} : 1</td>
+                        <td class="py-3 px-4 font-bold text-indigo-600">${avgComp} : 1</td>
+                    </tr>
+                `;
+            }).join('');
+            
+            // Sync modal textarea
+            document.getElementById('jsonTextArea').value = JSON.stringify(universityData, null, 2);
+        }
+
+        function filterTable() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const rows = document.querySelectorAll('#fullDataTableBody tr');
+            rows.forEach(row => {
+                const name = row.children[1].innerText.toLowerCase();
+                row.style.display = name.includes(query) ? '' : 'none';
+            });
+        }
+
+        function toggleDataModal() {
+            const modal = document.getElementById('dataModal');
+            modal.classList.toggle('hidden');
+        }
+
+        function handleFileUpload(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                const content = evt.target.result;
+                try {
+                    const parsed = JSON.parse(content);
+                    if (Array.isArray(parsed)) {
+                        document.getElementById('jsonTextArea').value = JSON.stringify(parsed, null, 2);
+                    }
+                } catch (err) {
+                    alert("JSON 형식이 올바르지 않습니다. 텍스트 창을 확인해 주세요.");
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function applyCustomData() {
+            try {
+                const text = document.getElementById('jsonTextArea').value;
+                const parsed = JSON.parse(text);
+                if (Array.isArray(parsed) && parsed.length > 0) {
+                    universityData = parsed;
+                    updateAllVisuals();
+                    toggleDataModal();
+                } else {
+                    alert("데이터 배열이 비어 있거나 형식 오류입니다.");
+                }
+            } catch (err) {
+                alert("JSON 데이터 파싱 실패: " + err.message);
+            }
+        }
+
+        function restoreDefaultData() {
+            universityData = [...DEFAULT_UNIVERSITIES];
+            updateAllVisuals();
+            toggleDataModal();
+        }
+
+        // Window load trigger
+        window.onload = function() {
+            updateAllVisuals();
+        };
+    </script>
+</body>
+</html>
