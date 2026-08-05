@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+<html lang="ko" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>인공지능일반 포트폴리오 | AI Learning Portfolio</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0f7ff',
+                            100: '#e0effe',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            900: '#1e3a8a',
+                        },
+                        ai: {
+                            purple: '#8b5cf6',
+                            teal: '#14b8a6',
+                            rose: '#f43f5e',
+                            amber: '#f59e0b'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'Noto Sans KR', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body {
+            font-family: 'Noto Sans KR', 'Inter', sans-serif;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        .dark .glass-panel {
+            background: rgba(15, 23, 42, 0.75);
+        }
+        .card-hover-effect {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .card-hover-effect:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-900 dark:text-slate-100 min-h-screen transition-colors duration-300">
+
+    <!-- Top Navigation Header -->
+    <header class="sticky top-0 z-40 w-full glass-panel border-b border-slate-200 dark:border-slate-800 transition-colors">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-purple-600 flex items-center justify-center text-white font-black text-xl shadow-md">
+                    AI
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg leading-none bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">인공지능일반</h1>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 font-medium">학습 탐구 포트폴리오</p>
+                </div>
+            </div>
+
+            <!-- Header Quick Actions -->
+            <div class="flex items-center gap-3">
+                <button id="themeToggle" class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition" title="다크모드 토글">
+                    <i data-lucide="moon" class="w-5 h-5 dark:hidden"></i>
+                    <i data-lucide="sun" class="w-5 h-5 hidden dark:block"></i>
+                </button>
+                <a href="#projects" class="hidden sm:flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium text-sm rounded-xl transition shadow-sm">
+                    <i data-lucide="layout-grid" class="w-4 h-4"></i>
+                    포트폴리오 카드 보기
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="relative overflow-hidden py-12 lg:py-16 bg-gradient-to-b from-blue-50/50 via-indigo-50/30 to-transparent dark:from-slate-900 dark:via-slate-800/50 dark:to-slate-900 border-b border-slate-200/60 dark:border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                
+                <!-- Left Profile Summary -->
+                <div class="lg:col-span-7 space-y-6">
+                    <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-100 dark:bg-blue-950/70 border border-blue-200 dark:border-blue-800 text-blue-700 dark:text-blue-300 text-xs font-semibold">
+                        <span class="w-2 h-2 rounded-full bg-blue-600 animate-pulse"></span>
+                        2026학년도 AI 융합 교육과정
+                    </div>
+                    <h2 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-tight">
+                        데이터와 생성형 AI로<br>
+                        <span class="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">세상을 탐구하고 해결합니다</span>
+                    </h2>
+                    <p class="text-base sm:text-lg text-slate-600 dark:text-slate-300 leading-relaxed max-w-2xl">
+                        '인공지능일반' 교과목에서 학습한 AI 원칙, 프롬프트 시네마틱, 진로 데이터 탐색, 지역 및 학교 문제 해결 웹앱 개발까지의 핵심 프로젝트 성과를 모아둔 종합 포트폴리오입니다.
+                    </p>
+                    
+                    <!-- Stats Badges -->
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
+                        <div class="p-3.5 rounded-2xl bg-white dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80 shadow-sm">
+                            <div class="text-2xl font-black text-blue-600 dark:text-blue-400">8개</div>
+                            <div class="text-xs font-medium text-slate-500 dark:text-slate-400">핵심 프로젝트</div>
+                        </div>
+                        <div class="p-3.5 rounded-2xl bg-white dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80 shadow-sm">
+                            <div class="text-2xl font-black text-indigo-600 dark:text-indigo-400">100%</div>
+                            <div class="text-xs font-medium text-slate-500 dark:text-slate-400">윤리원칙 준수</div>
+                        </div>
+                        <div class="p-3.5 rounded-2xl bg-white dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80 shadow-sm">
+                            <div class="text-2xl font-black text-purple-600 dark:text-purple-400">2개</div>
+                            <div class="text-xs font-medium text-slate-500 dark:text-slate-400">문제해결 웹앱</div>
+                        </div>
+                        <div class="p-3.5 rounded-2xl bg-white dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80 shadow-sm">
+                            <div class="text-2xl font-black text-teal-600 dark:text-teal-400">A+</div>
+                            <div class="text-xs font-medium text-slate-500 dark:text-slate-400">종합 성장 성찰</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Student Profile & Skill Tag Box -->
+                <div class="lg:col-span-5">
+                    <div class="p-6 rounded-3xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-xl relative overflow-hidden">
+                        <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-blue-400/20 to-purple-500/20 rounded-full blur-2xl -mr-10 -mt-10"></div>
+                        <div class="flex items-center gap-4 mb-4">
+                            <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-2xl font-black text-white shadow-md border-2 border-blue-400/30">
+                                TY
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                                    김태윤
+                                    <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-blue-100 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300">고등학생</span>
+                                </h3>
+                                <p class="text-sm font-semibold text-blue-600 dark:text-blue-400">컴퓨터공학과 진학 희망</p>
+                                <span class="inline-block mt-1 text-xs font-semibold px-2.5 py-0.5 rounded-md bg-purple-100 text-purple-700 dark:bg-purple-900/50 dark:text-purple-300">
+                                    인공지능일반 수강생
+                                </span>
+                            </div>
+                        </div>
+                        <div class="border-t border-slate-100 dark:border-slate-700/80 pt-4 space-y-3">
+                            <div class="text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">주요 관심 분야 & 사용 도구</div>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="px-2.5 py-1 text-xs font-medium rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300">Python / C++</span>
+                                <span class="px-2.5 py-1 text-xs font-medium rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300">알고리즘 & SW</span>
+                                <span class="px-2.5 py-1 text-xs font-medium rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300">ChatGPT-4o</span>
+                                <span class="px-2.5 py-1 text-xs font-medium rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300">Claude 3.5</span>
+                                <span class="px-2.5 py-1 text-xs font-medium rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300">Pandas / Chart.js</span>
+                                <span class="px-2.5 py-1 text-xs font-medium rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300">공공데이터 OpenAPI</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content Area -->
+    <main id="projects" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        
+        <!-- Filter & Title Section -->
+        <div class="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
+            <div>
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
+                    <i data-lucide="folder-kanban" class="w-7 h-7 text-blue-600 dark:text-blue-400"></i>
+                    포트폴리오 과제 카드 (8종)
+                </h2>
+                <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">각 카드를 클릭하면 상세 보고서, 시각화 차트 및 대화형 앱 데모를 확인할 수 있습니다.</p>
+            </div>
+
+            <!-- Filter Buttons -->
+            <div class="flex flex-wrap gap-2" id="filterContainer">
+                <button data-filter="all" class="filter-btn px-4 py-2 text-xs sm:text-sm font-semibold rounded-xl bg-blue-600 text-white shadow-sm transition">전체 보기</button>
+                <button data-filter="ethics" class="filter-btn px-4 py-2 text-xs sm:text-sm font-semibold rounded-xl bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 transition">원칙/윤리</button>
+                <button data-filter="creative" class="filter-btn px-4 py-2 text-xs sm:text-sm font-semibold rounded-xl bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 transition">스토리/영상</button>
+                <button data-filter="data" class="filter-btn px-4 py-2 text-xs sm:text-sm font-semibold rounded-xl bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 transition">데이터 분석</button>
+                <button data-filter="app" class="filter-btn px-4 py-2 text-xs sm:text-sm font-semibold rounded-xl bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 transition">웹앱 개발</button>
+            </div>
+        </div>
+
+        <!-- Portfolio Cards Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" id="cardsGrid">
+            
+            <!-- Card 1: 생성형 AI 활용 원칙 -->
+            <div class="project-card card-hover-effect rounded-3xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700/80 overflow-hidden flex flex-col justify-between cursor-pointer" data-category="ethics" onclick="location.href='./notebooklm/index.html'">
+                <div>
+                    <div class="h-44 bg-gradient-to-br from-blue-500 to-cyan-500 p-5 flex flex-col justify-between text-white relative">
+                        <div class="flex justify-between items-center">
+                            <span class="px-2.5 py-1 rounded-full bg-black/20 text-white text-xs font-semibold backdrop-blur-md">01. AI 원칙</span>
+                            <i data-lucide="shield-check" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <span class="text-xs font-medium text-blue-100">AI 윤리 & 프로토콜</span>
+                            <h3 class="text-xl font-bold mt-0.5 leading-snug">생성형 AI 활용 원칙</h3>
+                        </div>
+                    </div>
+                    <div class="p-5 space-y-3">
+                        <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 line-clamp-3">
+                            책임감 있는 AI 활용을 위해 수립한 5대 핵심 가치(출처 표기, 할루시네이션 검증, 창의적 보조, 개인정보 보호, 공정성) 준수 가이드라인.
+                        </p>
+                        <div class="flex flex-wrap gap-1.5 pt-2">
+                            <span class="px-2 py-0.5 text-[11px] rounded bg-blue-50 dark:bg-blue-900/40 text-blue-600 dark:text-blue-300 font-medium">AI윤리</span>
+                            <span class="px-2 py-0.5 text-[11px] rounded bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 font-medium">프롬프트 가이드</span>
+                        </div>
+                    </div>
+                </div>
+                <a href="./notebooklm/index.html" onclick="event.stopPropagation()" class="p-5 pt-0 border-t border-slate-100 dark:border-slate-700/50 mt-4 flex items-center justify-between text-xs font-semibold text-blue-600 dark:text-blue-400 hover:underline">
+                    <span>원칙 체크리스트 보기</span>
+                    <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                </a>
+            </div>
+
+            <!-- Card 2: AI 스토리와 영상 -->
+            <div class="project-card card-hover-effect rounded-3xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700/80 overflow-hidden flex flex-col justify-between cursor-pointer" data-category="creative" onclick="location.href='./storyboard/index.html'">
+                <div>
+                    <div class="h-44 bg-gradient-to-br from-purple-600 to-pink-500 p-5 flex flex-col justify-between text-white relative">
+                        <div class="flex justify-between items-center">
+                            <span class="px-2.5 py-1 rounded-full bg-black/20 text-white text-xs font-semibold backdrop-blur-md">02. 크리에이티브</span>
+                            <i data-lucide="video" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <span class="text-xs font-medium text-purple-100">스토리텔링 & 미디어</span>
+                            <h3 class="text-xl font-bold mt-0.5 leading-snug">AI 스토리와 영상</h3>
+                        </div>
+                    </div>
+                    <div class="p-5 space-y-3">
+                        <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 line-clamp-3">
+                            ChatGPT로 창작한 시나리오를 바탕으로 Runway와 Midjourney를 활용해 제작한 "2050 AI 공존 시네마틱 쇼트 릴".
+                        </p>
+                        <div class="flex flex-wrap gap-1.5 pt-2">
+                            <span class="px-2 py-0.5 text-[11px] rounded bg-purple-50 dark:bg-purple-900/40 text-purple-600 dark:text-purple-300 font-medium">생성형 비디오</span>
+                            <span class="px-2 py-0.5 text-[11px] rounded bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 font-medium">AI 스토리보드</span>
+                        </div>
+                    </div>
+                </div>
+                <a href="./storyboard/index.html" onclick="event.stopPropagation()" class="p-5 pt-0 border-t border-slate-100 dark:border-slate-700/50 mt-4 flex items-center justify-between text-xs font-semibold text-purple-600 dark:text-purple-400 hover:underline">
+                    <span>영상 및 스토리보드 보기</span>
+                    <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                </a>
+            </div>
+
+            <!-- Card 3: 진로 데이터 분석 -->
+            <div class="project-card card-hover-effect rounded-3xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700/80 overflow-hidden flex flex-col justify-between cursor-pointer" data-category="data" onclick="location.href='./university/index.html'">
+                <div>
+                    <div class="h-44 bg-gradient-to-br from-indigo-600 to-blue-700 p-5 flex flex-col justify-between text-white relative">
+                        <div class="flex justify-between items-center">
+                            <span class="px-2.5 py-1 rounded-full bg-black/20 text-white text-xs font-semibold backdrop-blur-md">03. 트렌드 분석</span>
+                            <i data-lucide="trending-up" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <span class="text-xs font-medium text-indigo-100">빅데이터 트렌드</span>
+                            <h3 class="text-xl font-bold mt-0.5 leading-snug">진로 데이터 분석</h3>
+                        </div>
+                    </div>
+                    <div class="p-5 space-y-3">
+                        <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 line-clamp-3">
+                            최근 5년간 AI 산업 진무 채용 공고 데이터를 시각화하여 미래 유망 AI 관련 직무 및 요구 스킬셋 추이 탐구.
+                        </p>
+                        <div class="flex flex-wrap gap-1.5 pt-2">
+                            <span class="px-2 py-0.5 text-[11px] rounded bg-indigo-50 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-300 font-medium">채용 데이터</span>
+                            <span class="px-2 py-0.5 text-[11px] rounded bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 font-medium">직무 트렌드</span>
+                        </div>
+                    </div>
+                </div>
+                <a href="./university/index.html" onclick="event.stopPropagation()" class="p-5 pt-0 border-t border-slate-100 dark:border-slate-700/50 mt-4 flex items-center justify-between text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:underline">
+                    <span>데이터 그래프 확인</span>
+                    <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                </a>
+            </div>
+
+            <!-- Card 4: 나의 진로 리포트 -->
+            <div class="project-card card-hover-effect rounded-3xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700/80 overflow-hidden flex flex-col justify-between cursor-pointer" data-category="data" onclick="location.href='./comdata/index.html'">
+                <div>
+                    <div class="h-44 bg-gradient-to-br from-teal-500 to-emerald-600 p-5 flex flex-col justify-between text-white relative">
+                        <div class="flex justify-between items-center">
+                            <span class="px-2.5 py-1 rounded-full bg-black/20 text-white text-xs font-semibold backdrop-blur-md">04. 진로 로드맵</span>
+                            <i data-lucide="user-check" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <span class="text-xs font-medium text-teal-100">컴공과 진학 비전</span>
+                            <h3 class="text-xl font-bold mt-0.5 leading-snug">나의 진로 리포트</h3>
+                        </div>
+                    </div>
+                    <div class="p-5 space-y-3">
+                        <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 line-clamp-3">
+                            '컴퓨터공학과 진학 및 AI·SW 개발자'를 목표로 한 개인 역량 레이더 차트 분석 및 CS 단계별 로드맵 보고서.
+                        </p>
+                        <div class="flex flex-wrap gap-1.5 pt-2">
+                            <span class="px-2 py-0.5 text-[11px] rounded bg-teal-50 dark:bg-teal-900/40 text-teal-600 dark:text-teal-300 font-medium">컴퓨터공학</span>
+                            <span class="px-2 py-0.5 text-[11px] rounded bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 font-medium">CS 로드맵</span>
+                        </div>
+                    </div>
+                </div>
+                <a href="./comdata/index.html" onclick="event.stopPropagation()" class="p-5 pt-0 border-t border-slate-100 dark:border-slate-700/50 mt-4 flex items-center justify-between text-xs font-semibold text-teal-600 dark:text-teal-400 hover:underline">
+                    <span>나의 역량 차트 보기</span>
+                    <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                </a>
+            </div>
+
+            <!-- Card 5: 지역 문제 데이터 분석 -->
+            <div class="project-card card-hover-effect rounded-3xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700/80 overflow-hidden flex flex-col justify-between cursor-pointer" data-category="data" onclick="openModal('modal5')">
+                <div>
+                    <div class="h-44 bg-gradient-to-br from-amber-500 to-orange-600 p-5 flex flex-col justify-between text-white relative">
+                        <div class="flex justify-between items-center">
+                            <span class="px-2.5 py-1 rounded-full bg-black/20 text-white text-xs font-semibold backdrop-blur-md">05. 소셜 데이터</span>
+                            <i data-lucide="map-pin" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <span class="text-xs font-medium text-amber-100">지역사회 데이터 탐구</span>
+                            <h3 class="text-xl font-bold mt-0.5 leading-snug">지역 문제 데이터 분석</h3>
+                        </div>
+                    </div>
+                    <div class="p-5 space-y-3">
+                        <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 line-clamp-3">
+                            지역 청년 인구 이동 및 대중교통 이용률 공공데이터 분석을 통해 도출한 AI 기반 지역 활성화 솔루션.
+                        </p>
+                        <div class="flex flex-wrap gap-1.5 pt-2">
+                            <span class="px-2 py-0.5 text-[11px] rounded bg-amber-50 dark:bg-amber-900/40 text-amber-600 dark:text-amber-300 font-medium">지역 데이터</span>
+                            <span class="px-2 py-0.5 text-[11px] rounded bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 font-medium">인구 유출 분석</span>
+                        </div>
+                    </div>
+                </div>
+                <a href="./AI2026safety/index.html" onclick="event.stopPropagation()" class="p-5 pt-0 border-t border-slate-100 dark:border-slate-700/50 mt-4 flex items-center justify-between text-xs font-semibold text-amber-600 dark:text-amber-400 hover:underline">
+                    <span>지역 문제 분석 보고서</span>
+                    <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                </a>
+            </div>
+
+            <!-- Card 6: 학교 문제 해결 웹앱 -->
+            <div class="project-card card-hover-effect rounded-3xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700/80 overflow-hidden flex flex-col justify-between cursor-pointer" data-category="app" onclick="openModal('modal6')">
+                <div>
+                    <div class="h-44 bg-gradient-to-br from-emerald-500 to-teal-700 p-5 flex flex-col justify-between text-white relative">
+                        <div class="flex justify-between items-center">
+                            <span class="px-2.5 py-1 rounded-full bg-black/20 text-white text-xs font-semibold backdrop-blur-md">06. 문제해결 웹앱</span>
+                            <i data-lucide="utensils" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <span class="text-xs font-medium text-emerald-100">학교 생활 개선</span>
+                            <h3 class="text-xl font-bold mt-0.5 leading-snug">학교 문제 해결 웹앱</h3>
+                        </div>
+                    </div>
+                    <div class="p-5 space-y-3">
+                        <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 line-clamp-3">
+                            학교 급식 잔반 감축을 위한 AI 이미지 인식 기반 식판 스캐너 및 맞춤 식단 만족도 분석 웹앱 "GreenPlate AI".
+                        </p>
+                        <div class="flex flex-wrap gap-1.5 pt-2">
+                            <span class="px-2 py-0.5 text-[11px] rounded bg-emerald-50 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-300 font-medium">잔반 감소 AI</span>
+                            <span class="px-2 py-0.5 text-[11px] rounded bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 font-medium">실시간 인터랙션</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-5 pt-0 border-t border-slate-100 dark:border-slate-700/50 mt-4 flex items-center justify-between text-xs font-semibold text-emerald-600 dark:text-emerald-400">
+                    <span>앱 인터랙티브 체험하기</span>
+                    <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                </div>
+            </div>
+
+            <!-- Card 7: 공공데이터 앱 -->
+            <div class="project-card card-hover-effect rounded-3xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700/80 overflow-hidden flex flex-col justify-between cursor-pointer" data-category="app" onclick="openModal('modal7')">
+                <div>
+                    <div class="h-44 bg-gradient-to-br from-cyan-500 to-blue-600 p-5 flex flex-col justify-between text-white relative">
+                        <div class="flex justify-between items-center">
+                            <span class="px-2.5 py-1 rounded-full bg-black/20 text-white text-xs font-semibold backdrop-blur-md">07. OpenAPI 개발</span>
+                            <i data-lucide="cloud-lightning" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <span class="text-xs font-medium text-cyan-100">공공데이터 응용</span>
+                            <h3 class="text-xl font-bold mt-0.5 leading-snug">공공데이터 앱</h3>
+                        </div>
+                    </div>
+                    <div class="p-5 space-y-3">
+                        <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 line-clamp-3">
+                            실시간 미세먼지 OpenAPI와 대피소 연동 모듈을 결합한 우리동네 스마트 시민 환경 정보 앱 "AirSafe KR".
+                        </p>
+                        <div class="flex flex-wrap gap-1.5 pt-2">
+                            <span class="px-2 py-0.5 text-[11px] rounded bg-cyan-50 dark:bg-cyan-900/40 text-cyan-600 dark:text-cyan-300 font-medium">공공 Open API</span>
+                            <span class="px-2 py-0.5 text-[11px] rounded bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 font-medium">환경 모니터링</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-5 pt-0 border-t border-slate-100 dark:border-slate-700/50 mt-4 flex items-center justify-between text-xs font-semibold text-cyan-600 dark:text-cyan-400">
+                    <span>공공데이터 서비스 시뮬레이션</span>
+                    <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                </div>
+            </div>
+
+            <!-- Card 8: 최종 성찰 내용 -->
+            <div class="project-card card-hover-effect rounded-3xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700/80 overflow-hidden flex flex-col justify-between cursor-pointer" data-category="ethics" onclick="openModal('modal8')">
+                <div>
+                    <div class="h-44 bg-gradient-to-br from-rose-500 to-pink-600 p-5 flex flex-col justify-between text-white relative">
+                        <div class="flex justify-between items-center">
+                            <span class="px-2.5 py-1 rounded-full bg-black/20 text-white text-xs font-semibold backdrop-blur-md">08. 종합 에세이</span>
+                            <i data-lucide="sparkles" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <span class="text-xs font-medium text-rose-100">성장과 미래 전망</span>
+                            <h3 class="text-xl font-bold mt-0.5 leading-snug">최종 성찰 내용</h3>
+                        </div>
+                    </div>
+                    <div class="p-5 space-y-3">
+                        <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 line-clamp-3">
+                            '인공지능일반' 수업을 마치며: Simple User에서 AI 문제 해결사(Problem Solver)로 도약한 수강 성장 일기 및 총평.
+                        </p>
+                        <div class="flex flex-wrap gap-1.5 pt-2">
+                            <span class="px-2 py-0.5 text-[11px] rounded bg-rose-50 dark:bg-rose-900/40 text-rose-600 dark:text-rose-300 font-medium">학습 성찰</span>
+                            <span class="px-2 py-0.5 text-[11px] rounded bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 font-medium">AI 리터러시</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-5 pt-0 border-t border-slate-100 dark:border-slate-700/50 mt-4 flex items-center justify-between text-xs font-semibold text-rose-600 dark:text-rose-400">
+                    <span>성찰 일기 및 평가지 보기</span>
+                    <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- MODALS SECTION CONTAINER -->
+    <div id="modalContainer">
+
+        <!-- Modal Backdrop -->
+        <div id="modalBackdrop" class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 hidden transition-opacity opacity-0 flex items-center justify-center p-4 overflow-y-auto">
+            
+            <!-- Modal Box Container -->
+            <div id="modalBox" class="bg-white dark:bg-slate-800 w-full max-w-4xl rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-700 overflow-hidden transform transition-all scale-95 opacity-0 my-8 max-h-[90vh] flex flex-col">
+                
+                <!-- Modal Header -->
+                <div class="p-6 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between bg-slate-50 dark:bg-slate-800/80 sticky top-0 z-10">
+                    <div class="flex items-center gap-3">
+                        <div id="modalCategoryBadge" class="px-3 py-1 text-xs font-bold rounded-full bg-blue-100 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300">
+                            카테고리
+                        </div>
+                        <h3 id="modalTitle" class="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">모달 제목</h3>
+                    </div>
+                    <button onclick="closeModal()" class="p-2 rounded-xl text-slate-400 hover:text-slate-700 dark:hover:text-white hover:bg-slate-200/50 dark:hover:bg-slate-700 transition">
+                        <i data-lucide="x" class="w-6 h-6"></i>
+                    </button>
+                </div>
+
+                <!-- Modal Scrollable Content Body -->
+                <div id="modalBody" class="p-6 sm:p-8 space-y-6 overflow-y-auto flex-1 text-slate-700 dark:text-slate-300">
+                    <!-- Dynamic Content Injected Here -->
+                </div>
+
+                <!-- Modal Footer -->
+                <div class="p-4 sm:p-5 border-t border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/80 flex justify-end">
+                    <button onclick="closeModal()" class="px-5 py-2.5 bg-slate-800 hover:bg-slate-900 dark:bg-slate-700 dark:hover:bg-slate-600 text-white font-medium text-sm rounded-xl transition">
+                        닫기
+                    </button>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <!-- HIDDEN TEMPLATES FOR MODAL CONTENTS -->
+    <template id="tpl-modal1">
+        <div class="space-y-6">
+            <div class="p-4 rounded-2xl bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800">
+                <h4 class="font-bold text-blue-900 dark:text-blue-200 mb-1 flex items-center gap-2">
+                    <i data-lucide="info" class="w-5 h-5 text-blue-600"></i>
+                    생성형 AI 올바른 활용 5대 윤리 원칙
+                </h4>
+                <p class="text-xs sm:text-sm text-blue-700 dark:text-blue-300">
+                    AI 기술을 사용할 때 발생할 수 있는 저작권, 할루시네이션(환각 현상), 개인정보 유출 문제를 방지하기 위해 정립한 서약입니다.
+                </p>
+            </div>
+
+            <!-- Interactive Checklist -->
+            <div class="space-y-3">
+                <h5 class="font-bold text-slate-900 dark:text-white text-base">나의 AI 윤리 실천 체크리스트</h5>
+                <div class="space-y-2">
+                    <label class="flex items-start gap-3 p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 cursor-pointer">
+                        <input type="checkbox" checked disabled class="mt-1 w-4 h-4 text-blue-600 rounded">
+                        <span class="text-xs sm:text-sm"><strong>[1. 출처 명시]</strong> AI가 생성한 문장이나 아이디어 활용 시 출처 및 모델명을 명확히 명시한다.</span>
+                    </label>
+                    <label class="flex items-start gap-3 p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 cursor-pointer">
+                        <input type="checkbox" checked disabled class="mt-1 w-4 h-4 text-blue-600 rounded">
+                        <span class="text-xs sm:text-sm"><strong>[2. 교차 검증]</strong> AI 답변의 사실 여부를 신뢰할 수 있는 외부 학술 자료나 공식 문서와 교차 확인한다.</span>
+                    </label>
+                    <label class="flex items-start gap-3 p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 cursor-pointer">
+                        <input type="checkbox" checked disabled class="mt-1 w-4 h-4 text-blue-600 rounded">
+                        <span class="text-xs sm:text-sm"><strong>[3. 개인정보 보호]</strong> 프롬프트에 이름, 전화번호, 학교 정보 등 민감한 개인정보를 입력하지 않는다.</span>
+                    </label>
+                    <label class="flex items-start gap-3 p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 cursor-pointer">
+                        <input type="checkbox" checked disabled class="mt-1 w-4 h-4 text-blue-600 rounded">
+                        <span class="text-xs sm:text-sm"><strong>[4. 편향성 경계]</strong> AI가 출력하는 정보에 특정 성별, 지역, 인종에 대한 편견이 없는지 다각도로 비판 평가한다.</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Prompting Tips Box -->
+            <div class="p-4 rounded-2xl bg-slate-100 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-600">
+                <h5 class="font-bold text-slate-900 dark:text-white text-sm mb-2 flex items-center gap-2">
+                    <i data-lucide="terminal" class="w-4 h-4 text-blue-500"></i>
+                    학습 시 활용한 프롬프트 템플릿 예시
+                </h5>
+                <pre class="bg-slate-900 text-slate-100 p-3 rounded-xl text-xs overflow-x-auto font-mono"><code>[역할] 고등학교 인공지능 윤리 전문가
+[목적] 내가 작성한 보고서의 할루시네이션 가능성 검토
+[요청] 아래 문장에 포함된 데이터 통계가 2026년 최신 기준에 맞는지 검증하고, 반론 2가지를 제시해줘.</code></pre>
+            </div>
+        </div>
+    </template>
+
+    <template id="tpl-modal2">
+        <div class="space-y-6">
+            <div class="aspect-video bg-slate-900 rounded-2xl flex flex-col items-center justify-center text-white p-6 relative overflow-hidden group">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
+                <i data-lucide="clapperboard" class="w-16 h-16 text-purple-400 mb-3 relative z-10 animate-bounce"></i>
+                <h4 class="text-lg sm:text-xl font-bold relative z-10 text-center">"2050년, AI와 함께 숨쉬는 부산"</h4>
+                <p class="text-xs sm:text-sm text-slate-300 relative z-10 mt-1 text-center">Runway Gen-2 & Midjourney v6 융합 시네마틱 영상 프로젝트</p>
+                <div class="mt-4 relative z-10 flex gap-2">
+                    <span class="px-3 py-1 rounded-full bg-purple-600/80 text-xs font-semibold">4K 가상 시뮬레이션</span>
+                    <span class="px-3 py-1 rounded-full bg-slate-700/80 text-xs font-semibold">AI 음성 캡션 포함</span>
+                </div>
+            </div>
+
+            <div class="space-y-3">
+                <h5 class="font-bold text-slate-900 dark:text-white text-base">스토리보드 파이프라인</h5>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+                        <div class="text-xs font-bold text-purple-600 mb-1">Scene 1. 프롬프트 작성</div>
+                        <p class="text-xs text-slate-600 dark:text-slate-400">ChatGPT를 통해 Futuristic Busan Port의 디스토피아/유토피아 대립 대본 도출</p>
+                    </div>
+                    <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+                        <div class="text-xs font-bold text-purple-600 mb-1">Scene 2. 비주얼 생성</div>
+                        <p class="text-xs text-slate-600 dark:text-slate-400">Midjourney에 일관된 캐릭터 렌더링 파라미터(--cref)를 활용하여 콘셉트 아트 제작</p>
+                    </div>
+                    <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+                        <div class="text-xs font-bold text-purple-600 mb-1">Scene 3. 모션 & 사운드</div>
+                        <p class="text-xs text-slate-600 dark:text-slate-400">Runway 카메라 줌 모션 적용 및 Suno AI 배경음악 합성으로 완성도 극대화</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <template id="tpl-modal3">
+        <div class="space-y-6">
+            <p class="text-sm">
+                워크넷 및 공공 채용 데이터베이스를 활용하여 최근 5개년 AI 분야 직무별 수요 성장률을 분석했습니다.
+            </p>
+            <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700">
+                <h5 class="font-bold text-slate-900 dark:text-white text-sm mb-4 flex items-center justify-between">
+                    <span>AI 직무별 연평균 수요 성장률 (%)</span>
+                    <span class="text-xs font-normal text-slate-500">(2022년~2026년 추이)</span>
+                </h5>
+                <div class="h-64">
+                    <canvas id="chartModal3"></canvas>
+                </div>
+            </div>
+            <div class="p-4 rounded-2xl bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800 text-xs sm:text-sm text-indigo-900 dark:text-indigo-200">
+                <strong>핵심 분석 결과:</strong> AI 엔지니어링뿐만 아니라 데이터 윤리 컨설턴트 및 AI 프롬프트 아키텍트와 같은 '융합형 인재'의 수요가 매년 35% 이상 급증하는 경향을 확인했습니다.
+            </div>
+        </div>
+    </template>
+
+    <template id="tpl-modal4">
+        <div class="space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+                <div>
+                    <h5 class="font-bold text-slate-900 dark:text-white text-base mb-2">김태윤 학생의 AI 역량 진단 레이더</h5>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">
+                        컴퓨터공학과 진학을 준비하며 수강 전/후 역량을 5개 영역으로 나누어 자가 진단했습니다.
+                    </p>
+                    <div class="h-60">
+                        <canvas id="chartModal4"></canvas>
+                    </div>
+                </div>
+                <div class="space-y-3">
+                    <h5 class="font-bold text-slate-900 dark:text-white text-base">목표 진로: 컴퓨터공학과 (AI·SW 엔지니어)</h5>
+                    <div class="space-y-2 text-xs sm:text-sm">
+                        <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+                            <span class="font-bold text-teal-600 block">Step 1. CS & 프로그래밍 기초</span>
+                            <span>Python, C++ 기본 문법 확립 및 알고리즘·자료구조 기본기 다지기</span>
+                        </div>
+                        <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+                            <span class="font-bold text-teal-600 block">Step 2. AI 모델링 & 데이터 실습</span>
+                            <span>Pandas, Scikit-learn 및 머신러닝 기초 모델 파이프라인 구축</span>
+                        </div>
+                        <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+                            <span class="font-bold text-teal-600 block">Step 3. 윤리적 SW 개발 및 문제해결</span>
+                            <span>공공데이터 OpenAPI 및 AI 윤리 가이드 기반 고교-대학 연계 프로젝트 수행</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <template id="tpl-modal5">
+        <div class="space-y-6">
+            <p class="text-sm">
+                부산광역시 구별 청년 인구 유출 현황 공공데이터를 수집 및 분석하여 현상 파악과 데이터 기반 대안을 제시했습니다.
+            </p>
+            <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700">
+                <h5 class="font-bold text-slate-900 dark:text-white text-sm mb-4">부산 주요 구별 청년 순유출 비율 시각화</h5>
+                <div class="h-60">
+                    <canvas id="chartModal5"></canvas>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs sm:text-sm">
+                <div class="p-3.5 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800">
+                    <div class="font-bold text-amber-800 dark:text-amber-300 mb-1">도출된 도심 문제</div>
+                    <p class="text-amber-700 dark:text-amber-400">원도심 인프라 부족 및 IT/AI 일자리 편중으로 인한 청년층 인접 도시 이동</p>
+                </div>
+                <div class="p-3.5 rounded-xl bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800">
+                    <div class="font-bold text-blue-800 dark:text-blue-300 mb-1">AI 기반 제안 솔루션</div>
+                    <p class="text-blue-700 dark:text-blue-400">AI 기반 원격 공유 오피스 매칭 및 청년 일자리 데이터 맞춤 알림 스마트 플랫폼 구축</p>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <template id="tpl-modal6">
+        <div class="space-y-6">
+            <div class="p-4 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800">
+                <h4 class="font-bold text-emerald-900 dark:text-emerald-200 mb-1 flex items-center gap-2">
+                    <i data-lucide="sparkles" class="w-5 h-5 text-emerald-600"></i>
+                    학교 급식 잔반 감소 시뮬레이터 "GreenPlate AI"
+                </h4>
+                <p class="text-xs sm:text-sm text-emerald-700 dark:text-emerald-300">
+                    아래 버튼을 눌러 AI 식판 잔반 카메라 스캔을 시뮬레이션해 보세요!
+                </p>
+            </div>
+
+            <!-- Interactive Mini App Demo -->
+            <div class="p-6 rounded-2xl bg-slate-900 text-white space-y-4">
+                <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+                    <span class="text-xs font-mono text-emerald-400">● LIVE AI SCANNER ENGINE</span>
+                    <span id="scanStatus" class="text-xs px-2 py-0.5 rounded bg-slate-800 text-slate-300">대기 중</span>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 items-center">
+                    <div id="scanPreview" class="h-40 rounded-xl bg-slate-800 border-2 border-dashed border-slate-700 flex flex-col items-center justify-center text-slate-400 p-4 text-center">
+                        <i data-lucide="camera" class="w-8 h-8 mb-2 text-slate-500"></i>
+                        <span class="text-xs">식판 이미지를 촬영하거나 테스트 버튼을 누르세요.</span>
+                    </div>
+                    <div class="space-y-3">
+                        <div>
+                            <div class="text-xs text-slate-400">예상 잔반량 측정</div>
+                            <div id="wasteResult" class="text-2xl font-black text-emerald-400">-- %</div>
+                        </div>
+                        <div>
+                            <div class="text-xs text-slate-400">에코 포인트 적립</div>
+                            <div id="pointResult" class="text-lg font-bold text-amber-400">+0 pts</div>
+                        </div>
+                        <button onclick="runAppScanDemo()" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl transition shadow-md">
+                            식판 AI 스캔 시뮬레이션 시작
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <template id="tpl-modal7">
+        <div class="space-y-6">
+            <p class="text-sm">
+                공공데이터 포털의 실시간 대기오염 및 안전 대피소 OpenAPI를 연동하여 동작하는 시뮬레이션 대시보드입니다.
+            </p>
+
+            <div class="p-5 rounded-2xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 space-y-4">
+                <div class="flex flex-col sm:flex-row gap-3 items-center justify-between">
+                    <span class="text-xs font-bold text-slate-600 dark:text-slate-300">지역 검색 연동:</span>
+                    <div class="flex gap-2 w-full sm:w-auto">
+                        <select id="districtSelect" onchange="updatePublicDataDemo()" class="px-3 py-1.5 rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-xs font-medium focus:outline-none">
+                            <option value="해운대구">부산 해운대구</option>
+                            <option value="진구">부산 진구</option>
+                            <option value="금정구">부산 금정구</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
+                    <div class="p-3 bg-white dark:bg-slate-700 rounded-xl border border-slate-200 dark:border-slate-600 text-center">
+                        <div class="text-xs text-slate-500 dark:text-slate-400">통합대기환경지수</div>
+                        <div id="aqiVal" class="text-xl font-extrabold text-emerald-500 mt-1">보통 (42)</div>
+                    </div>
+                    <div class="p-3 bg-white dark:bg-slate-700 rounded-xl border border-slate-200 dark:border-slate-600 text-center">
+                        <div class="text-xs text-slate-500 dark:text-slate-400">초미세먼지 (PM2.5)</div>
+                        <div id="pm25Val" class="text-xl font-extrabold text-blue-500 mt-1">15 ㎍/㎥</div>
+                    </div>
+                    <div class="p-3 bg-white dark:bg-slate-700 rounded-xl border border-slate-200 dark:border-slate-600 text-center">
+                        <div class="text-xs text-slate-500 dark:text-slate-400">인근 지정 대피소</div>
+                        <div id="shelterVal" class="text-xl font-extrabold text-purple-500 mt-1">12 개소</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <template id="tpl-modal8">
+        <div class="space-y-6">
+            <div class="p-5 rounded-2xl bg-gradient-to-r from-rose-500 to-pink-600 text-white shadow-lg">
+                <h4 class="text-lg font-bold mb-1">"AI를 단순 활용하던 학생에서, 컴퓨팅 사고력을 갖춘 SW 개발자로"</h4>
+                <p class="text-xs sm:text-sm text-rose-100">컴퓨터공학과 진학을 꿈꾸는 고등학생 김태윤의 '인공지능일반' 최종 수강 성찰록</p>
+            </div>
+
+            <div class="space-y-4 text-xs sm:text-sm leading-relaxed">
+                <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+                    <h5 class="font-bold text-slate-900 dark:text-white mb-1">1. AI 리터러시와 컴퓨터공학적 사고의 결합</h5>
+                    <p class="text-slate-600 dark:text-slate-300">
+                        단순히 생성형 AI 챗봇을 활용하는 유저에 머물지 않고, 프로그래밍 알고리즘과 데이터 분석 관점에서 AI의 작동 원리를 탐구했습니다. 컴퓨터공학과 진학 후 배우게 될 머신러닝, 데이터 구조, OpenAPI 연동의 기본 기틀을 탄탄히 다질 수 있었습니다.
+                    </p>
+                </div>
+
+                <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+                    <h5 class="font-bold text-slate-900 dark:text-white mb-1">2. 개발자로서의 윤리적 책임감 체득</h5>
+                    <p class="text-slate-600 dark:text-slate-300">
+                        편향된 학습 데이터가 가져오는 위험성과 할루시네이션 검증의 중요성을 배웠습니다. 미래 컴퓨터공학도로서 사람에게 안전하고 공정한 인공지능 소프트웨어를 개발하겠다는 윤리적 사과의식을 확립했습니다.
+                    </p>
+                </div>
+
+                <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+                    <h5 class="font-bold text-slate-900 dark:text-white mb-1">3. 컴퓨터공학과 진학 후의 포부</h5>
+                    <p class="text-slate-600 dark:text-slate-300">
+                        고교 '인공지능일반' 수업을 통해 쌓은 데이터 분석력과 문제해결형 웹앱 구현 경험을 발판 삼아, 대학 진학 후 사회적 가치를 창출하는 혁신적인 AI·SW 엔지니어로 성장하겠습니다.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <!-- Footer Section -->
+    <footer class="bg-slate-900 text-slate-400 py-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center text-white font-bold text-sm">
+                    AI
+                </div>
+                <span class="text-white font-bold text-base">인공지능일반 포트폴리오</span>
+            </div>
+            <div class="text-xs text-center md:text-right">
+                <p>© 2026 High School AI Curriculum. Created with HTML5, Tailwind CSS & Chart.js</p>
+                <p class="mt-1 text-slate-500">본 포트폴리오는 교과목 수행평가 및 학습 성찰 목적으로 제작되었습니다.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        // Dark/Light Theme Toggle Logic
+        const themeToggleBtn = document.getElementById('themeToggle');
+        themeToggleBtn.addEventListener('click', () => {
+            document.documentElement.classList.toggle('dark');
+        });
+
+        // Filter Functionality
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const projectCards = document.querySelectorAll('.project-card');
+
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const filter = btn.getAttribute('data-filter');
+
+                // Update active state
+                filterBtns.forEach(b => {
+                    b.classList.remove('bg-blue-600', 'text-white');
+                    b.classList.add('bg-white', 'dark:bg-slate-800', 'text-slate-600', 'dark:text-slate-300');
+                });
+                btn.classList.remove('bg-white', 'dark:bg-slate-800', 'text-slate-600', 'dark:text-slate-300');
+                btn.classList.add('bg-blue-600', 'text-white');
+
+                // Filter cards
+                projectCards.forEach(card => {
+                    const category = card.getAttribute('data-category');
+                    if (filter === 'all' || category === filter) {
+                        card.style.display = 'flex';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+        });
+
+        // Modal Management
+        const modalBackdrop = document.getElementById('modalBackdrop');
+        const modalBox = document.getElementById('modalBox');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalCategoryBadge = document.getElementById('modalCategoryBadge');
+        const modalBody = document.getElementById('modalBody');
+
+        const modalConfig = {
+            modal1: { title: "생성형 AI 활용 원칙 보고서", category: "원칙/윤리", tpl: "tpl-modal1" },
+            modal2: { title: "AI 시네마틱 스토리 & 비디오", category: "스토리/영상", tpl: "tpl-modal2" },
+            modal3: { title: "AI 산업 진로 데이터 분석", category: "데이터 분석", tpl: "tpl-modal3", chartInit: initChart3 },
+            modal4: { title: "나의 AI 역량 진단 리포트", category: "진로 탐구", tpl: "tpl-modal4", chartInit: initChart4 },
+            modal5: { title: "지역 문제(부산 청년 인구) 분석", category: "데이터 분석", tpl: "tpl-modal5", chartInit: initChart5 },
+            modal6: { title: "학교 급식 잔반 해결 웹앱 (GreenPlate)", category: "웹앱 개발", tpl: "tpl-modal6" },
+            modal7: { title: "공공데이터 연동 스마트 대시보드", category: "웹앱 개발", tpl: "tpl-modal7" },
+            modal8: { title: "최종 교과 수강 성찰록", category: "최종 성찰", tpl: "tpl-modal8" }
+        };
+
+        function openModal(id) {
+            const config = modalConfig[id];
+            if (!config) return;
+
+            modalTitle.textContent = config.title;
+            modalCategoryBadge.textContent = config.category;
+
+            // Load template
+            const tpl = document.getElementById(config.tpl);
+            modalBody.innerHTML = '';
+            if (tpl) {
+                modalBody.appendChild(tpl.content.cloneNode(true));
+            }
+
+            // Show Backdrop & Modal
+            modalBackdrop.classList.remove('hidden');
+            setTimeout(() => {
+                modalBackdrop.classList.remove('opacity-0');
+                modalBox.classList.remove('scale-95', 'opacity-0');
+            }, 10);
+
+            // Re-render Lucide Icons inside modal
+            lucide.createIcons();
+
+            // Run Chart initializers if any
+            if (config.chartInit) {
+                setTimeout(config.chartInit, 150);
+            }
+        }
+
+        function closeModal() {
+            modalBox.classList.add('scale-95', 'opacity-0');
+            modalBackdrop.classList.add('opacity-0');
+            setTimeout(() => {
+                modalBackdrop.classList.add('hidden');
+            }, 300);
+        }
+
+        // Close on backdrop click
+        modalBackdrop.addEventListener('click', (e) => {
+            if (e.target === modalBackdrop) closeModal();
+        });
+
+        // Close on Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeModal();
+        });
+
+        // Chart Initialization Functions
+        let chartInstance3 = null;
+        function initChart3() {
+            const ctx = document.getElementById('chartModal3');
+            if (!ctx) return;
+            if (chartInstance3) chartInstance3.destroy();
+
+            chartInstance3 = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['AI 엔지니어', '데이터 아키텍트', 'AI 윤리 컨설턴트', '프롬프트 디자이너', 'AI 서비스 기획'],
+                    datasets: [{
+                        label: '수요 증가율 (%)',
+                        data: [42, 38, 35, 51, 29],
+                        backgroundColor: ['#3b82f6', '#14b8a6', '#8b5cf6', '#ec4899', '#f59e0b'],
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } }
+                }
+            });
+        }
+
+        let chartInstance4 = null;
+        function initChart4() {
+            const ctx = document.getElementById('chartModal4');
+            if (!ctx) return;
+            if (chartInstance4) chartInstance4.destroy();
+
+            chartInstance4 = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['수학적 사고', '데이터 문해력', '프롬프트 능력', 'AI 윤리 의식', '문제 해결력'],
+                    datasets: [
+                        {
+                            label: '수강 전',
+                            data: [50, 40, 30, 60, 45],
+                            borderColor: '#94a3b8',
+                            backgroundColor: 'rgba(148, 163, 184, 0.2)'
+                        },
+                        {
+                            label: '수강 후 (현재)',
+                            data: [85, 90, 95, 95, 90],
+                            borderColor: '#0d9488',
+                            backgroundColor: 'rgba(13, 148, 136, 0.3)'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: { r: { min: 0, max: 100 } }
+                }
+            });
+        }
+
+        let chartInstance5 = null;
+        function initChart5() {
+            const ctx = document.getElementById('chartModal5');
+            if (!ctx) return;
+            if (chartInstance5) chartInstance5.destroy();
+
+            chartInstance5 = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['2022년', '2023년', '2024년', '2025년', '2026년'],
+                    datasets: [{
+                        label: '청년층 순유출 인구 (천 명)',
+                        data: [14.2, 13.8, 12.5, 11.1, 9.8],
+                        borderColor: '#f97316',
+                        backgroundColor: 'rgba(249, 115, 22, 0.1)',
+                        fill: true,
+                        tension: 0.3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+        }
+
+        // Mini App Demo Actions
+        function runAppScanDemo() {
+            const status = document.getElementById('scanStatus');
+            const preview = document.getElementById('scanPreview');
+            const wasteResult = document.getElementById('wasteResult');
+            const pointResult = document.getElementById('pointResult');
+
+            if (!status || !preview) return;
+
+            status.textContent = "AI 분석 중...";
+            status.className = "text-xs px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 animate-pulse";
+            preview.innerHTML = `<div class="text-xs text-blue-400 font-mono">스캐닝... [████████] 100%</div>`;
+
+            setTimeout(() => {
+                status.textContent = "스캔 완료";
+                status.className = "text-xs px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300";
+                
+                const randomWaste = (Math.random() * 15 + 5).toFixed(1);
+                wasteResult.textContent = `${randomWaste}% (우수)`;
+                pointResult.textContent = `+150 pts`;
+
+                preview.innerHTML = `
+                    <div class="text-xs text-emerald-400 font-bold mb-1">✓ 식판 스캔 완료</div>
+                    <div class="text-[11px] text-slate-300">잔잔한 잔반량으로 에코 등급 'GOLD' 달성!</div>
+                `;
+            }, 800);
+        }
+
+        function updatePublicDataDemo() {
+            const district = document.getElementById('districtSelect').value;
+            const aqiVal = document.getElementById('aqiVal');
+            const pm25Val = document.getElementById('pm25Val');
+            const shelterVal = document.getElementById('shelterVal');
+
+            if (!aqiVal) return;
+
+            if (district === '해운대구') {
+                aqiVal.textContent = "좋음 (28)";
+                aqiVal.className = "text-xl font-extrabold text-emerald-500 mt-1";
+                pm25Val.textContent = "10 ㎍/㎥";
+                shelterVal.textContent = "18 개소";
+            } else if (district === '진구') {
+                aqiVal.textContent = "보통 (58)";
+                aqiVal.className = "text-xl font-extrabold text-amber-500 mt-1";
+                pm25Val.textContent = "22 ㎍/㎥";
+                shelterVal.textContent = "24 개소";
+            } else {
+                aqiVal.textContent = "좋음 (34)";
+                aqiVal.className = "text-xl font-extrabold text-emerald-500 mt-1";
+                pm25Val.textContent = "12 ㎍/㎥";
+                shelterVal.textContent = "15 개소";
+            }
+        }
+    </script>
+</body>
+</html>
