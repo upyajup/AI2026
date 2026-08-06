@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="ko" class="dark scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Safe Zone Navigator - 어린이보호구역 안전 길찾기 서비스 명세서</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#eef2ff',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                        },
+                        safe: '#10b981',    /* 80~100 */
+                        caution: '#f59e0b', /* 50~79 */
+                        danger: '#ef4444'   /* 0~49 */
+                    },
+                    fontFamily: {
+                        sans: ['Noto Sans KR', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Custom CSS for Glassmorphism & Visual Polish -->
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #090d16;
+            color: #f8fafc;
+            overflow-x: hidden;
+        }
+
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .glass-card {
+            background: rgba(30, 41, 59, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .glass-card:hover {
+            border-color: rgba(99, 102, 241, 0.3);
+            box-shadow: 0 10px 30px -10px rgba(99, 102, 241, 0.2);
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #090d16;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(100, 116, 139, 0.4);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(148, 163, 184, 0.7);
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 50%, #818cf8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col bg-slate-950 text-slate-100">
+
+    <header class="sticky top-0 z-50 glass-panel border-b border-slate-800/80 px-4 lg:px-12 py-4 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center text-white text-xl font-bold shadow-lg shadow-indigo-500/30">
+                <i class="fa-solid fa-shield-halved"></i>
+            </div>
+            <div>
+                <a href="#hero" class="text-lg lg:text-xl font-extrabold tracking-tight gradient-text">
+                    Safe Zone Navigator
+                </a>
+                <p class="text-[11px] text-slate-400 hidden sm:block">어린이보호구역 데이터 기반 안전 길찾기 플랫폼 기획 명세</p>
+            </div>
+        </div>
+
+        <nav class="hidden md:flex items-center gap-6 text-xs font-semibold text-slate-300">
+            <a href="#overview" class="hover:text-indigo-400 transition">개요 & 비전</a>
+            <a href="#features" class="hover:text-indigo-400 transition">주요 기능 (FR)</a>
+            <a href="#calculator" class="hover:text-indigo-400 transition">안전점수 알고리즘</a>
+            <a href="#routing" class="hover:text-indigo-400 transition">경로 탐색 메커니즘</a>
+            <a href="#data-arch" class="hover:text-indigo-400 transition">데이터 & 구조</a>
+            <a href="#analytics" class="hover:text-indigo-400 transition">통계 리포트</a>
+        </nav>
+
+        <div class="flex items-center gap-2">
+            <a href="../index.html" class="px-3.5 py-2 bg-slate-800/80 hover:bg-slate-700 text-slate-200 border border-slate-700/80 rounded-xl text-xs font-bold transition flex items-center gap-1.5">
+                <i class="fa-solid fa-house text-indigo-400"></i> 홈
+            </a>
+            <a href="street.html" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-bold shadow-lg shadow-indigo-600/30 transition flex items-center gap-2">
+                <i class="fa-solid fa-mobile-screen-button"></i> 앱 바로가기
+            </a>
+        </div>
+    </header>
+
+    <main class="flex-1 space-y-20 pb-20">
+
+        <section id="hero" class="relative pt-16 pb-12 px-4 lg:px-12 max-w-7xl mx-auto overflow-hidden">
+            <div class="absolute top-0 right-1/4 w-96 h-96 bg-indigo-600/15 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="absolute bottom-0 left-1/4 w-96 h-96 bg-purple-600/10 rounded-full blur-3xl pointer-events-none"></div>
+
+            <div class="text-center space-y-6 max-w-4xl mx-auto relative z-10">
+                <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-bold">
+                    <i class="fa-solid fa-sparkles"></i> 2026 공공데이터 활용 보행 안전 혁신 서비스
+                </div>
+
+                <h1 class="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white leading-tight">
+                    단순한 길안내를 넘어<br>
+                    <span class="gradient-text">어린이 보행 안전을 최우선</span>으로
+                </h1>
+
+                <p class="text-slate-400 text-sm sm:text-base max-w-2xl mx-auto leading-relaxed">
+                    <strong>Safe Zone Navigator</strong>는 전국 16,000+개소의 어린이보호구역 공공데이터를 기반으로<br class="hidden sm:inline">
+                    <span class="text-slate-200 font-semibold">CCTV 밀도 · 도로 폭 · 구역 밀집도</span>를 종합 평가하여 0~100점 안전 스코어를 부여하고 최적의 안전 보행 경로를 제안합니다.
+                </p>
+
+                <!-- Key Metrics Cards -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 pt-6 text-left">
+                    <div class="glass-card p-4 rounded-2xl">
+                        <div class="text-indigo-400 text-xs font-bold mb-1"><i class="fa-solid fa-database mr-1"></i> 데이터 분석</div>
+                        <div class="text-2xl font-black text-white">16,000+</div>
+                        <div class="text-[11px] text-slate-400 mt-1">전국 어린이보호구역 레코드</div>
+                    </div>
+                    <div class="glass-card p-4 rounded-2xl">
+                        <div class="text-emerald-400 text-xs font-bold mb-1"><i class="fa-solid fa-sliders mr-1"></i> 주요 지표</div>
+                        <div class="text-2xl font-black text-white">3가지</div>
+                        <div class="text-[11px] text-slate-400 mt-1">CCTV · 도로폭 · 밀집도</div>
+                    </div>
+                    <div class="glass-card p-4 rounded-2xl">
+                        <div class="text-amber-400 text-xs font-bold mb-1"><i class="fa-solid fa-route mr-1"></i> 경로 탐색</div>
+                        <div class="text-2xl font-black text-white">A* Modified</div>
+                        <div class="text-[11px] text-slate-400 mt-1">안전 패널티 우회 가중치</div>
+                    </div>
+                    <div class="glass-card p-4 rounded-2xl">
+                        <div class="text-purple-400 text-xs font-bold mb-1"><i class="fa-solid fa-bolt mr-1"></i> 실행 환경</div>
+                        <div class="text-2xl font-black text-white">Client Side</div>
+                        <div class="text-[11px] text-slate-400 mt-1">서버 없는 빠른 브라우저 파싱</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="overview" class="px-4 lg:px-12 max-w-7xl mx-auto space-y-8">
+            <div class="border-l-4 border-indigo-500 pl-4">
+                <h2 class="text-xs font-bold text-indigo-400 tracking-wider uppercase">01. 개요 & 배경 (Overview)</h2>
+                <h3 class="text-2xl font-extrabold text-white mt-1">왜 어린이보호구역 안전 네비게이션인가?</h3>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="glass-card p-6 rounded-2xl border border-rose-500/20 relative overflow-hidden">
+                    <div class="w-10 h-10 rounded-xl bg-rose-500/20 text-rose-400 flex items-center justify-center font-bold text-lg mb-4">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                    </div>
+                    <h4 class="text-lg font-bold text-white mb-2">기존 내비게이션의 한계 (Problem)</h4>
+                    <p class="text-xs text-slate-300 leading-relaxed space-y-2">
+                        기존의 지도 및 길안내 앱은 <strong>"최단 거리"</strong> 또는 <strong>"최단 시간"</strong>만을 핵심 목표로 설정합니다.<br><br>
+                        이로 인해 CCTV가 없는 어두운 골목길, 좁아서 보차 분리가 되지 않는 위험 도로, 차량 통행량이 많은 구간을 어린이 보행자에게 안내하는 문제가 발생합니다.
+                    </p>
+                </div>
+
+                <div class="glass-card p-6 rounded-2xl border border-emerald-500/20 relative overflow-hidden">
+                    <div class="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-lg mb-4">
+                        <i class="fa-solid fa-shield-check"></i>
+                    </div>
+                    <h4 class="text-lg font-bold text-white mb-2">Safe Zone Navigator의 솔루션 (Solution)</h4>
+                    <p class="text-xs text-slate-300 leading-relaxed space-y-2">
+                        보호구역 내 <strong>CCTV 설치 대수, 도로 너비(m), 주변 보호구역 밀집도</strong> 데이터를 수집 및 수치화합니다.<br><br>
+                        보행 위험도를 비용(Cost) 패널티로 변환하는 Modified A* 알고리즘을 통해, 어린이가 안심하고 다닐 수 있는 <strong>최우선 안전 경로</strong>를 정밀 제공합니다.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section id="features" class="px-4 lg:px-12 max-w-7xl mx-auto space-y-8">
+            <div class="border-l-4 border-indigo-500 pl-4">
+                <h2 class="text-xs font-bold text-indigo-400 tracking-wider uppercase">02. 핵심 기능 요구사항 (Functional Requirements)</h2>
+                <h3 class="text-2xl font-extrabold text-white mt-1">PRD 핵심 기능 명세서</h3>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- FR-01 -->
+                <div class="glass-card p-6 rounded-2xl flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="px-2.5 py-1 text-xs font-black rounded-lg bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">FR-01</span>
+                            <i class="fa-solid fa-map-pin text-slate-500 text-lg"></i>
+                        </div>
+                        <h4 class="text-base font-bold text-white mb-2">마커 시각화 & 클러스터링</h4>
+                        <p class="text-xs text-slate-400 leading-relaxed">
+                            전국 16,000개 이상의 위치를 안전점수에 따라 색상(녹/황/적)으로 구분하고, 대용량 처리 시 MarkerCluster를 통해 가독성을 확보합니다.
+                        </p>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-slate-800 text-[11px] text-slate-500 flex justify-between">
+                        <span>Leaflet.js + OSM</span>
+                        <span class="text-emerald-400 font-semibold">필수 구현</span>
+                    </div>
+                </div>
+
+                <!-- FR-02 -->
+                <div class="glass-card p-6 rounded-2xl flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="px-2.5 py-1 text-xs font-black rounded-lg bg-indigo-500/20 text-indigo-400 border border-indigo-500/30">FR-02</span>
+                            <i class="fa-solid fa-window-restore text-slate-500 text-lg"></i>
+                        </div>
+                        <h4 class="text-base font-bold text-white mb-2">마커 상세 팝업 명세</h4>
+                        <p class="text-xs text-slate-400 leading-relaxed">
+                            구역 클릭 시 대상시설명, 도로명주소, 도로폭(m), 관할 경찰서, CCTV 설치 대수, 최종 종합 안전점수를 상세 출력합니다.
+                        </p>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-slate-800 text-[11px] text-slate-500 flex justify-between">
+                        <span>Interactive Popup</span>
+                        <span class="text-emerald-400 font-semibold">필수 구현</span>
+                    </div>
+                </div>
+
+                <!-- FR-03 -->
+                <div class="glass-card p-6 rounded-2xl flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="px-2.5 py-1 text-xs font-black rounded-lg bg-amber-500/20 text-amber-400 border border-amber-500/30">FR-03</span>
+                            <i class="fa-solid fa-calculator text-slate-500 text-lg"></i>
+                        </div>
+                        <h4 class="text-base font-bold text-white mb-2">안전점수 & 히트맵 시각화</h4>
+                        <p class="text-xs text-slate-400 leading-relaxed">
+                            CCTV(40%) + 도로폭(35%) + 밀집도(25%) 가중치를 합성하여 0~100점 스코어를 계산하고 히트맵 오버레이 레이어로 밀도를 표시합니다.
+                        </p>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-slate-800 text-[11px] text-slate-500 flex justify-between">
+                        <span>Leaflet.heat</span>
+                        <span class="text-amber-400 font-semibold">우선순위 높음</span>
+                    </div>
+                </div>
+
+                <!-- FR-04 -->
+                <div class="glass-card p-6 rounded-2xl flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="px-2.5 py-1 text-xs font-black rounded-lg bg-purple-500/20 text-purple-400 border border-purple-500/30">FR-04</span>
+                            <i class="fa-solid fa-route text-slate-500 text-lg"></i>
+                        </div>
+                        <h4 class="text-base font-bold text-white mb-2">안전 경로 탐색 (A* Engine)</h4>
+                        <p class="text-xs text-slate-400 leading-relaxed">
+                            출발지-목적지 간 보호구역을 그래프 노드로 산출하고, (100-안전점수) 패널티 비용을 반영하여 안전 보행 경로를 탐색합니다.
+                        </p>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-slate-800 text-[11px] text-slate-500 flex justify-between">
+                        <span>Modified A* Algo</span>
+                        <span class="text-purple-400 font-semibold">우선순위 높음</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="calculator" class="px-4 lg:px-12 max-w-7xl mx-auto space-y-8">
+            <div class="border-l-4 border-indigo-500 pl-4">
+                <h2 class="text-xs font-bold text-indigo-400 tracking-wider uppercase">03. 안전점수 산출 알고리즘 (FR-03 Calculator)</h2>
+                <h3 class="text-2xl font-extrabold text-white mt-1">실시간 안전점수 계산기 시뮬레이터</h3>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                <!-- Left: Formula Explanation -->
+                <div class="lg:col-span-5 space-y-4">
+                    <div class="glass-card p-6 rounded-2xl space-y-4 border border-indigo-500/30">
+                        <h4 class="text-sm font-bold text-indigo-300 flex items-center gap-2">
+                            <i class="fa-solid fa-square-root-variable"></i> 점수 산출 가중치 공식
+                        </h4>
+                        <div class="bg-slate-900/90 p-4 rounded-xl border border-slate-800 font-mono text-xs text-indigo-200 leading-relaxed">
+                            Score = (CCTV × 0.40) + (RoadWidth × 0.35) + (Density × 0.25)
+                        </div>
+
+                        <ul class="text-xs text-slate-300 space-y-3">
+                            <li class="flex items-start gap-2">
+                                <span class="w-2 h-2 rounded-full bg-indigo-500 mt-1.5 shrink-0"></span>
+                                <div>
+                                    <strong class="text-white">CCTV 점수 (최대 40점):</strong><br>
+                                    설치 대수 10대 이상 시 만점 (40점). 비례 정규화 적용.
+                                </div>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="w-2 h-2 rounded-full bg-emerald-500 mt-1.5 shrink-0"></span>
+                                <div>
+                                    <strong class="text-white">도로폭 점수 (최대 35점):</strong><br>
+                                    도로 너비 6m 이상 시 만점 (35점). 결측 시 전국 평균(8m) 대입.
+                                </div>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="w-2 h-2 rounded-full bg-amber-500 mt-1.5 shrink-0"></span>
+                                <div>
+                                    <strong class="text-white">밀집도 점수 (최대 25점):</strong><br>
+                                    반경 500m 내 타 보호구역 중복 수 — 많을수록 사각지대/혼잡 위험 증가로 감점 역산.
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Right: Interactive Controls -->
+                <div class="lg:col-span-7">
+                    <div class="glass-panel p-6 sm:p-8 rounded-2xl border border-slate-800 space-y-6">
+                        <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+                            <div>
+                                <h4 class="text-base font-extrabold text-white">시뮬레이션 조절기</h4>
+                                <p class="text-xs text-slate-400">슬라이더를 움직여 파라미터 변화에 따른 최종 점수를 확인하세요.</p>
+                            </div>
+                            <div class="text-right">
+                                <span id="sim-grade-badge" class="px-3 py-1 rounded-full text-xs font-black bg-emerald-500/20 text-emerald-400 border border-emerald-500/40">
+                                    🟢 안전 등급
+                                </span>
+                                <div id="sim-total-score-display" class="text-3xl font-black text-emerald-400 mt-1">82.5 점</div>
+                            </div>
+                        </div>
+
+                        <!-- Sliders -->
+                        <div class="space-y-5">
+                            <div>
+                                <div class="flex justify-between text-xs font-bold mb-1.5">
+                                    <span class="text-slate-300"><i class="fa-solid fa-video text-indigo-400 mr-1.5"></i> CCTV 설치 대수 (가중치 40%)</span>
+                                    <span id="sim-val-cctv" class="text-indigo-400">6 대 (24.0점)</span>
+                                </div>
+                                <input type="range" id="sim-input-cctv" min="0" max="15" value="6" oninput="runScoreSimulation()" class="w-full h-2 bg-slate-900 rounded-lg appearance-none cursor-pointer accent-indigo-500">
+                            </div>
+
+                            <div>
+                                <div class="flex justify-between text-xs font-bold mb-1.5">
+                                    <span class="text-slate-300"><i class="fa-solid fa-ruler-horizontal text-emerald-400 mr-1.5"></i> 도로 너비 Width (가중치 35%)</span>
+                                    <span id="sim-val-width" class="text-emerald-400">10.0 m (35.0점)</span>
+                                </div>
+                                <input type="range" id="sim-input-width" min="2" max="20" value="10" step="0.5" oninput="runScoreSimulation()" class="w-full h-2 bg-slate-900 rounded-lg appearance-none cursor-pointer accent-emerald-500">
+                            </div>
+
+                            <div>
+                                <div class="flex justify-between text-xs font-bold mb-1.5">
+                                    <span class="text-slate-300"><i class="fa-solid fa-cubes text-amber-400 mr-1.5"></i> 반경 500m 내 인접 보호구역 수 (가중치 25%)</span>
+                                    <span id="sim-val-density" class="text-amber-400">3 개 (10.0점)</span>
+                                </div>
+                                <input type="range" id="sim-input-density" min="0" max="10" value="3" oninput="runScoreSimulation()" class="w-full h-2 bg-slate-900 rounded-lg appearance-none cursor-pointer accent-amber-500">
+                            </div>
+                        </div>
+
+                        <!-- Progress Score Breakdown Bar -->
+                        <div class="space-y-1.5 pt-2">
+                            <div class="text-[11px] text-slate-400 flex justify-between">
+                                <span>기여도 비중 바</span>
+                                <span>0점 --------------------------------- 100점</span>
+                            </div>
+                            <div class="w-full h-3 bg-slate-900 rounded-full overflow-hidden flex">
+                                <div id="bar-cctv" class="h-full bg-indigo-500 transition-all duration-300" style="width: 24%;"></div>
+                                <div id="bar-width" class="h-full bg-emerald-500 transition-all duration-300" style="width: 35%;"></div>
+                                <div id="bar-density" class="h-full bg-amber-500 transition-all duration-300" style="width: 10%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="routing" class="px-4 lg:px-12 max-w-7xl mx-auto space-y-8">
+            <div class="border-l-4 border-indigo-500 pl-4">
+                <h2 class="text-xs font-bold text-indigo-400 tracking-wider uppercase">04. 안전 경로 탐색 알고리즘 (FR-04 Mechanism)</h2>
+                <h3 class="text-2xl font-extrabold text-white mt-1">Modified A* 알고리즘 & 옵션 비교</h3>
+            </div>
+
+            <!-- Algorithm Cost Formula Card -->
+            <div class="glass-card p-6 rounded-2xl border border-purple-500/30">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+                    <div class="p-4 bg-slate-900/80 rounded-xl border border-slate-800">
+                        <div class="text-xs font-bold text-purple-400 uppercase">기본 거리 비용 (Distance)</div>
+                        <div class="text-xl font-extrabold text-white mt-1">Edge Distance (km)</div>
+                        <p class="text-[11px] text-slate-400 mt-1">두 좌표 간 하버사인(Haversine) 실거리</p>
+                    </div>
+
+                    <div class="p-4 bg-slate-900/80 rounded-xl border border-slate-800">
+                        <div class="text-xs font-bold text-rose-400 uppercase">위험 패널티 (Safety Penalty)</div>
+                        <div class="text-xl font-extrabold text-white mt-1">(100 - Score) × α</div>
+                        <p class="text-[11px] text-slate-400 mt-1">낮은 안전점수일수록 이동 비용을 대폭 증가시킴</p>
+                    </div>
+
+                    <div class="p-4 bg-slate-900/80 rounded-xl border border-slate-800">
+                        <div class="text-xs font-bold text-emerald-400 uppercase">최종 A* 엣지 가중치 (Cost)</div>
+                        <div class="text-xl font-extrabold text-emerald-400 mt-1">Distance + Penalty</div>
+                        <p class="text-[11px] text-slate-400 mt-1">패널티가 반영된 최적 탐색 노드 선택</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Option A vs Option B Comparison Table -->
+            <div class="glass-panel p-6 rounded-2xl border border-slate-800 space-y-4">
+                <h4 class="text-base font-bold text-white flex items-center gap-2">
+                    <i class="fa-solid fa-code-compare text-indigo-400"></i> 경로 탐색 구현 방식 검토 (Open Issue Option Comparison)
+                </h4>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+                    <div class="glass-card p-5 rounded-xl border border-slate-800 hover:border-indigo-500/40 transition">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-bold text-indigo-400">Option A</span>
+                            <span class="px-2 py-0.5 text-[10px] bg-slate-800 text-slate-300 rounded">외부 OSRM API 연동</span>
+                        </div>
+                        <h5 class="text-sm font-bold text-white mb-2">실제 도로망 기반 보행 경로 + 보호구역 웨이포인트</h5>
+                        <ul class="text-xs text-slate-300 space-y-1.5 list-disc list-inside">
+                            <li>실제 도보 인도(Pedestrian Road) 지도와 정확히 일치</li>
+                            <li>외부 API 호출 의존성 및 네트워크 레이턴시 존재</li>
+                            <li>보호구역 지점 우회 가중치 적용 시 API 커스텀 파라미터 필요</li>
+                        </ul>
+                    </div>
+
+                    <div class="glass-card p-5 rounded-xl border border-indigo-500/30 bg-indigo-950/20">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-bold text-emerald-400">Option B (추천 채택안)</span>
+                            <span class="px-2 py-0.5 text-[10px] bg-emerald-500/20 text-emerald-400 rounded border border-emerald-500/30">클라이언트 자체 그래프 Engine</span>
+                        </div>
+                        <h5 class="text-sm font-bold text-white mb-2">보호구역 포인트 기반 독립 그래프 A* 탐색</h5>
+                        <ul class="text-xs text-slate-300 space-y-1.5 list-disc list-inside">
+                            <li>외부 서버 및 API 키 없이 브라우저 단독으로 100% 작동</li>
+                            <li>CCTV/도로폭 데이터 반영 패널티 연산이 실시간으로 신속함</li>
+                            <li>네트워크 연결 불량 환경에서도 안정적 구동 보장</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="data-arch" class="px-4 lg:px-12 max-w-7xl mx-auto space-y-8">
+            <div class="border-l-4 border-indigo-500 pl-4">
+                <h2 class="text-xs font-bold text-indigo-400 tracking-wider uppercase">05. 데이터 아키텍처 & 스펙 (Data Schema)</h2>
+                <h3 class="text-2xl font-extrabold text-white mt-1">공공데이터 CSV 컬럼 명세 및 기술 스택</h3>
+            </div>
+
+            <!-- CSV Table -->
+            <div class="glass-panel p-6 rounded-2xl border border-slate-800 space-y-4">
+                <div class="flex items-center justify-between">
+                    <h4 class="text-sm font-bold text-white flex items-center gap-2">
+                        <i class="fa-solid fa-file-csv text-emerald-400"></i> 전국어린이보호구역표준데이터.csv (2.7MB / EUC-KR)
+                    </h4>
+                    <span class="text-xs text-slate-400">클라이언트 PapaParse 자동 인코딩 파싱</span>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-xs text-left text-slate-300">
+                        <thead class="text-[11px] uppercase bg-slate-900/90 text-slate-400 border-b border-slate-800">
+                            <tr>
+                                <th class="px-4 py-3">컬럼명</th>
+                                <th class="px-4 py-3">설명</th>
+                                <th class="px-4 py-3">데이터 타입</th>
+                                <th class="px-4 py-3">활용 및 연산 가중치</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-800/60">
+                            <tr class="hover:bg-slate-900/40">
+                                <td class="px-4 py-3 font-semibold text-white">시도명 / 시군구명</td>
+                                <td class="px-4 py-3">광역시/도 및 시군구 행정구역</td>
+                                <td class="px-4 py-3 text-slate-400">String</td>
+                                <td class="px-4 py-3 text-indigo-400">지역별 데이터 필터링</td>
+                            </tr>
+                            <tr class="hover:bg-slate-900/40">
+                                <td class="px-4 py-3 font-semibold text-white">위도 / 경도</td>
+                                <td class="px-4 py-3">보호구역의 WGS84 좌표</td>
+                                <td class="px-4 py-3 text-slate-400">Float</td>
+                                <td class="px-4 py-3 text-indigo-400">좌표간 거리 (Haversine Formula)</td>
+                            </tr>
+                            <tr class="hover:bg-slate-900/40">
+                                <td class="px-4 py-3 font-semibold text-white">CCTV설치대수</td>
+                                <td class="px-4 py-3">보호구역 내 감시 카메라 수량</td>
+                                <td class="px-4 py-3 text-slate-400">Integer</td>
+                                <td class="px-4 py-3 text-emerald-400 font-bold">안전점수 40% 반영</td>
+                            </tr>
+                            <tr class="hover:bg-slate-900/40">
+                                <td class="px-4 py-3 font-semibold text-white">보호구역도로폭</td>
+                                <td class="px-4 py-3">도로 너비 (미터 m)</td>
+                                <td class="px-4 py-3 text-slate-400">Float</td>
+                                <td class="px-4 py-3 text-emerald-400 font-bold">안전점수 35% 반영 (결측시 평균8m)</td>
+                            </tr>
+                            <tr class="hover:bg-slate-900/40">
+                                <td class="px-4 py-3 font-semibold text-white">관할경찰서명</td>
+                                <td class="px-4 py-3">해당 구역 관할 경찰서</td>
+                                <td class="px-4 py-3 text-slate-400">String</td>
+                                <td class="px-4 py-3 text-slate-400">팝업 상세 정보 표시</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Tech Stack Grid -->
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+                <div class="glass-card p-4 rounded-xl text-center">
+                    <i class="fa-brands fa-html5 text-orange-500 text-2xl mb-2"></i>
+                    <div class="text-xs font-bold text-white">HTML5 / JS</div>
+                    <div class="text-[10px] text-slate-400 mt-0.5">Vanilla Client</div>
+                </div>
+                <div class="glass-card p-4 rounded-xl text-center">
+                    <i class="fa-solid fa-map text-emerald-400 text-2xl mb-2"></i>
+                    <div class="text-xs font-bold text-white">Leaflet.js</div>
+                    <div class="text-[10px] text-slate-400 mt-0.5">Map & Markers</div>
+                </div>
+                <div class="glass-card p-4 rounded-xl text-center">
+                    <i class="fa-solid fa-file-csv text-blue-400 text-2xl mb-2"></i>
+                    <div class="text-xs font-bold text-white">PapaParse</div>
+                    <div class="text-[10px] text-slate-400 mt-0.5">EUC-KR CSV Parser</div>
+                </div>
+                <div class="glass-card p-4 rounded-xl text-center">
+                    <i class="fa-solid fa-chart-pie text-purple-400 text-2xl mb-2"></i>
+                    <div class="text-xs font-bold text-white">Chart.js</div>
+                    <div class="text-[10px] text-slate-400 mt-0.5">Analytics Visualizer</div>
+                </div>
+                <div class="glass-card p-4 rounded-xl text-center">
+                    <i class="fa-solid fa-wand-magic-sparkles text-cyan-400 text-2xl mb-2"></i>
+                    <div class="text-xs font-bold text-white">Tailwind CSS</div>
+                    <div class="text-[10px] text-slate-400 mt-0.5">Glassmorphism UI</div>
+                </div>
+                <div class="glass-card p-4 rounded-xl text-center">
+                    <i class="fa-solid fa-microchip text-rose-400 text-2xl mb-2"></i>
+                    <div class="text-xs font-bold text-white">A* Algorithm</div>
+                    <div class="text-[10px] text-slate-400 mt-0.5">Safe Routing Engine</div>
+                </div>
+            </div>
+        </section>
+
+        <section id="analytics" class="px-4 lg:px-12 max-w-7xl mx-auto space-y-8">
+            <div class="border-l-4 border-indigo-500 pl-4">
+                <h2 class="text-xs font-bold text-indigo-400 tracking-wider uppercase">06. 통계 리포트 (Analytics Dashboard)</h2>
+                <h3 class="text-2xl font-extrabold text-white mt-1">어린이보호구역 데이터 종합 통계 분석</h3>
+            </div>
+
+            <!-- Stats Header Banner -->
+            <div class="glass-panel p-6 rounded-2xl border border-slate-800 flex flex-col md:flex-row items-center justify-between gap-6">
+                <div>
+                    <h4 class="text-lg font-bold text-white">전국 분포 데이터 분석 대시보드 샘플</h4>
+                    <p class="text-xs text-slate-400 mt-1">CCTV 설치 밀도 및 도로 폭 기반 지자체별 안전도 통계</p>
+                </div>
+                <div class="flex gap-4">
+                    <div class="bg-slate-900/90 px-4 py-2.5 rounded-xl border border-slate-800 text-center">
+                        <div class="text-[10px] text-slate-400">전국 평균 안전점수</div>
+                        <div class="text-xl font-black text-indigo-400 mt-0.5">76.8 점</div>
+                    </div>
+                    <div class="bg-slate-900/90 px-4 py-2.5 rounded-xl border border-slate-800 text-center">
+                        <div class="text-[10px] text-slate-400">우수 안전구역 비율</div>
+                        <div class="text-xl font-black text-emerald-400 mt-0.5">48.2 %</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Doughnut Chart -->
+                <div class="glass-card p-6 rounded-2xl border border-slate-800 flex flex-col items-center">
+                    <h4 class="text-sm font-bold text-slate-200 self-start mb-4">
+                        <i class="fa-solid fa-chart-pie text-emerald-400 mr-2"></i> 안전점수 등급별 분포 비율
+                    </h4>
+                    <div class="w-full h-64 relative flex items-center justify-center">
+                        <canvas id="doc-chart-distribution"></canvas>
+                    </div>
+                </div>
+
+                <!-- Bar Chart -->
+                <div class="glass-card p-6 rounded-2xl border border-slate-800 flex flex-col">
+                    <h4 class="text-sm font-bold text-slate-200 mb-4">
+                        <i class="fa-solid fa-chart-bar text-indigo-400 mr-2"></i> 주요 광역시/도별 평균 안전점수
+                    </h4>
+                    <div class="w-full h-64 relative">
+                        <canvas id="doc-chart-regional"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="roadmap" class="px-4 lg:px-12 max-w-7xl mx-auto space-y-8">
+            <div class="border-l-4 border-indigo-500 pl-4">
+                <h2 class="text-xs font-bold text-indigo-400 tracking-wider uppercase">07. 로드맵 (Development Milestones)</h2>
+                <h3 class="text-2xl font-extrabold text-white mt-1">단계별 개발 추진 계획</h3>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="glass-card p-5 rounded-2xl border border-slate-800">
+                    <div class="text-xs font-bold text-emerald-400 mb-2">Phase 1 ~ 2 (완료)</div>
+                    <h5 class="text-sm font-bold text-white mb-2">CSV 파싱 & 안전점수 엔진</h5>
+                    <p class="text-xs text-slate-400 leading-relaxed">
+                        PapaParse 기반 클라이언트 데이터 수집, EUC-KR 한글 파싱 및 CCTV·도로폭·밀집도 삼각 가중치 연산 엔진 구축.
+                    </p>
+                </div>
+
+                <div class="glass-card p-5 rounded-2xl border border-indigo-500/30 bg-indigo-950/20">
+                    <div class="text-xs font-bold text-indigo-400 mb-2">Phase 3 ~ 4 (진행 중)</div>
+                    <h5 class="text-sm font-bold text-white mb-2">Leaflet 클러스터링 & 히트맵</h5>
+                    <p class="text-xs text-slate-400 leading-relaxed">
+                        16,000+개 마커 색상 구분, MarkerCluster 가독성 확보, Leaflet.heat 오버레이 레이어 및 팝업 명세 UI 구현.
+                    </p>
+                </div>
+
+                <div class="glass-card p-5 rounded-2xl border border-slate-800">
+                    <div class="text-xs font-bold text-purple-400 mb-2">Phase 5 ~ 6 (예정)</div>
+                    <h5 class="text-sm font-bold text-white mb-2">A* 안전 경로 탐색 & 대시보드</h5>
+                    <p class="text-xs text-slate-400 leading-relaxed">
+                        Modified A* 알고리즘 경로 계산, 최단거리 vs 안전경로 비교 패널 및 종합 안전 통계 차트 대시보드 완성.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-800 bg-slate-950 py-8 text-center text-xs text-slate-500">
+        <div class="max-w-7xl mx-auto px-4 space-y-2">
+            <p>🛡️ Safe Zone Navigator — 전국 어린이보호구역 공공데이터 기반 안전 길찾기 서비스 기획 명세서</p>
+            <p class="text-[11px] text-slate-600">Data Source: 행정안전부 전국어린이보호구역표준데이터 (EUC-KR Standard)</p>
+        </div>
+    </footer>
+
+    <script>
+        /* ==========================================================================
+           1. LIVE SCORE CALCULATOR SIMULATOR
+           ========================================================================== */
+        
+        function runScoreSimulation() {
+            const cctv = parseInt(document.getElementById('sim-input-cctv').value);
+            const width = parseFloat(document.getElementById('sim-input-width').value);
+            const density = parseInt(document.getElementById('sim-input-density').value);
+
+            // 1. CCTV score (max 40 pts)
+            const cctvScore = Math.min(40, (cctv / 10.0) * 40);
+
+            // 2. Road Width score (max 35 pts)
+            const widthScore = Math.min(35, (width / 6.0) * 35);
+
+            // 3. Density score (max 25 pts) - lower density = higher score
+            const densityPenalty = Math.min(25, density * 5);
+            const densityScore = Math.max(0, 25 - densityPenalty);
+
+            const totalScore = parseFloat((cctvScore + widthScore + densityScore).toFixed(1));
+
+            // Update Labels
+            document.getElementById('sim-val-cctv').textContent = `${cctv} 대 (${cctvScore.toFixed(1)}점)`;
+            document.getElementById('sim-val-width').textContent = `${width.toFixed(1)} m (${widthScore.toFixed(1)}점)`;
+            document.getElementById('sim-val-density').textContent = `${density} 개 (${densityScore.toFixed(1)}점)`;
+
+            // Update Total & Grade Badge
+            const scoreDisplay = document.getElementById('sim-total-score-display');
+            const gradeBadge = document.getElementById('sim-grade-badge');
+            scoreDisplay.textContent = `${totalScore} 점`;
+
+            if (totalScore >= 80) {
+                scoreDisplay.className = "text-3xl font-black text-emerald-400 mt-1";
+                gradeBadge.className = "px-3 py-1 rounded-full text-xs font-black bg-emerald-500/20 text-emerald-400 border border-emerald-500/40";
+                gradeBadge.textContent = "🟢 안전 등급 (80+)";
+            } else if (totalScore >= 50) {
+                scoreDisplay.className = "text-3xl font-black text-amber-400 mt-1";
+                gradeBadge.className = "px-3 py-1 rounded-full text-xs font-black bg-amber-500/20 text-amber-400 border border-amber-500/40";
+                gradeBadge.textContent = "🟡 주의 등급 (50~79)";
+            } else {
+                scoreDisplay.className = "text-3xl font-black text-rose-400 mt-1";
+                gradeBadge.className = "px-3 py-1 rounded-full text-xs font-black bg-rose-500/20 text-rose-400 border border-rose-500/40";
+                gradeBadge.textContent = "🔴 위험 등급 (~49)";
+            }
+
+            // Update Progress Bar Segments
+            document.getElementById('bar-cctv').style.width = `${cctvScore}%`;
+            document.getElementById('bar-width').style.width = `${widthScore}%`;
+            document.getElementById('bar-density').style.width = `${densityScore}%`;
+        }
+
+        /* ==========================================================================
+           2. CHART.JS ANALYTICS DASHBOARD RENDERING
+           ========================================================================== */
+
+        window.onload = function() {
+            runScoreSimulation();
+            renderAnalyticsCharts();
+        };
+
+        function renderAnalyticsCharts() {
+            // Chart 1: Doughnut Distribution
+            const ctx1 = document.getElementById('doc-chart-distribution').getContext('2d');
+            new Chart(ctx1, {
+                type: 'doughnut',
+                data: {
+                    labels: ['안전 (80점 이상)', '주의 (50~79점)', '위험 (50점 미만)'],
+                    datasets: [{
+                        data: [48.2, 38.5, 13.3],
+                        backgroundColor: ['#10b981', '#f59e0b', '#ef4444'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { color: '#94a3b8', font: { family: 'Noto Sans KR' } } }
+                    }
+                }
+            });
+
+            // Chart 2: Regional Bar Chart
+            const ctx2 = document.getElementById('doc-chart-regional').getContext('2d');
+            new Chart(ctx2, {
+                type: 'bar',
+                data: {
+                    labels: ['서울', '경기', '부산', '대구', '인천', '광주', '대전'],
+                    datasets: [{
+                        label: '평균 안전점수',
+                        data: [82.4, 78.1, 74.5, 76.2, 81.0, 73.8, 77.9],
+                        backgroundColor: '#6366f1',
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { min: 50, max: 100, ticks: { color: '#94a3b8' }, grid: { color: '#1e293b' } },
+                        x: { ticks: { color: '#94a3b8' }, grid: { display: false } }
+                    },
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
