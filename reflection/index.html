@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="ko" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>김태윤 - 인공지능일반 수업 성찰 및 성장 보고서</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter & Noto Sans KR -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#10b981',
+                            600: '#059669',
+                            700: '#047857',
+                        },
+                        accent: {
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Noto Sans KR', 'Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .glass-card {
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .glow-effect {
+            box-shadow: 0 0 25px -5px rgba(16, 185, 129, 0.25);
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #34d399 0%, #818cf8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 font-sans antialiased selection:bg-brand-500 selection:text-slate-900 min-h-screen">
+
+    <!-- Navigation Bar -->
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-slate-950/80 backdrop-blur-md border-b border-slate-800/80">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <a href="../index.html" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs sm:text-sm font-medium transition-all border border-slate-700 hover:text-brand-500 group">
+                    <i class="fa-solid fa-house text-brand-500 group-hover:scale-110 transition-transform"></i>
+                    <span>홈</span>
+                </a>
+                <span class="w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-500 to-accent-500 flex items-center justify-center text-slate-950 font-black text-lg shadow-lg shadow-brand-500/20">
+                    AI
+                </span>
+                <div>
+                    <h1 class="font-bold text-base sm:text-lg text-slate-100 leading-tight">김태윤 포트폴리오</h1>
+                    <p class="text-xs text-brand-500 font-medium">컴퓨터공학과 진학 희망</p>
+                </div>
+            </div>
+            
+            <div class="hidden md:flex items-center gap-6 text-sm font-medium text-slate-300">
+                <a href="../index.html" class="hover:text-brand-500 transition-colors flex items-center gap-1.5">
+                    <i class="fa-solid fa-house text-xs"></i>
+                    <span>홈</span>
+                </a>
+                <a href="#summary" class="hover:text-brand-500 transition-colors">수업 개요</a>
+                <a href="#experience" class="hover:text-brand-500 transition-colors">성찰 & 느낀점</a>
+                <a href="#future" class="hover:text-brand-500 transition-colors">미래 다짐</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Header -->
+    <header id="summary" class="pt-28 pb-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+        <div class="relative rounded-3xl p-6 sm:p-10 md:p-12 glass-card overflow-hidden border border-slate-800 glow-effect">
+            <!-- Background Glows -->
+            <div class="absolute -top-24 -right-24 w-96 h-96 bg-brand-500/10 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="absolute -bottom-24 -left-24 w-96 h-96 bg-accent-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+            <div class="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                <div class="lg:col-span-8 space-y-5">
+                    <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-800/80 border border-brand-500/30 text-brand-500 text-xs font-semibold">
+                        <span class="w-2 h-2 rounded-full bg-brand-500 animate-pulse"></span>
+                        2026학년도 AI 융합 교육과정
+                    </div>
+                    <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight leading-tight">
+                        '인공지능일반' 교과목 이수<br>
+                        <span class="gradient-text">성찰 및 미래 성장 보고서</span>
+                    </h1>
+                    <p class="text-slate-300 text-sm sm:text-base leading-relaxed max-w-2xl">
+                        단순한 생성형 AI 사용자를 넘어, 실생활 문제 해결과 윤리적 가치 정립을 주도하는 <strong class="text-brand-500">AI Problem Solver</strong>로 거듭난 김태윤의 종합 성장 포트폴리오입니다.
+                    </p>
+
+                    <!-- Tech Badges -->
+                    <div class="pt-2 flex flex-wrap gap-2 text-xs">
+                        <span class="px-2.5 py-1 rounded-md bg-slate-800/90 text-slate-300 border border-slate-700/60 font-mono"><i class="fa-brands fa-python text-yellow-400 mr-1.5"></i>Python</span>
+                        <span class="px-2.5 py-1 rounded-md bg-slate-800/90 text-slate-300 border border-slate-700/60 font-mono"><i class="fa-solid fa-code text-blue-400 mr-1.5"></i>C++</span>
+                        <span class="px-2.5 py-1 rounded-md bg-slate-800/90 text-slate-300 border border-slate-700/60 font-mono"><i class="fa-solid fa-robot text-emerald-400 mr-1.5"></i>ChatGPT-4o</span>
+                        <span class="px-2.5 py-1 rounded-md bg-slate-800/90 text-slate-300 border border-slate-700/60 font-mono"><i class="fa-solid fa-brain text-purple-400 mr-1.5"></i>Claude 3.5</span>
+                        <span class="px-2.5 py-1 rounded-md bg-slate-800/90 text-slate-300 border border-slate-700/60 font-mono"><i class="fa-solid fa-chart-simple text-indigo-400 mr-1.5"></i>Pandas & Chart.js</span>
+                        <span class="px-2.5 py-1 rounded-md bg-slate-800/90 text-slate-300 border border-slate-700/60 font-mono"><i class="fa-solid fa-cloud text-sky-400 mr-1.5"></i>공공데이터 OpenAPI</span>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-4">
+                    <div class="p-6 rounded-2xl bg-slate-900/90 border border-slate-800 space-y-4">
+                        <div class="flex items-center gap-4 pb-4 border-b border-slate-800">
+                            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-brand-500 to-indigo-600 flex items-center justify-center text-white font-bold text-xl shadow-md">
+                                KT
+                            </div>
+                            <div>
+                                <h2 class="text-lg font-bold text-white">김태윤</h2>
+                                <p class="text-xs text-slate-400">고등학생 | 컴퓨터공학과 희망</p>
+                                <span class="inline-block mt-1 px-2 py-0.5 bg-brand-500/10 text-brand-500 rounded text-[11px] font-medium border border-brand-500/20">수강생 대표 성찰</span>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-3 text-center">
+                            <div class="p-3 rounded-xl bg-slate-950/60 border border-slate-800">
+                                <div class="text-xl font-extrabold text-brand-500">5대</div>
+                                <div class="text-[11px] text-slate-400">AI 윤리 준수 수립</div>
+                            </div>
+                            <div class="p-3 rounded-xl bg-slate-950/60 border border-slate-800">
+                                <div class="text-xl font-extrabold text-accent-500">7개</div>
+                                <div class="text-[11px] text-slate-400">핵심 문제해결 프로젝트</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Section 1: Learning Experience -->
+    <section id="experience" class="py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-12">
+        <div class="text-center max-w-3xl mx-auto space-y-3">
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-white flex items-center justify-center gap-3">
+                <i class="fa-solid fa-graduation-cap text-brand-500"></i>
+                <span>수업을 이수하며 느낀 점</span>
+            </h2>
+            <p class="text-slate-400 text-sm sm:text-base">
+                이론 학습과 프로젝트 실습을 결합하며 쌓아 올린 3가지 핵심 성장의 축입니다.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Card 1 -->
+            <div class="rounded-2xl p-6 bg-slate-900/80 border border-slate-800 hover:border-brand-500/50 transition-all duration-300 flex flex-col justify-between group">
+                <div class="space-y-4">
+                    <div class="w-12 h-12 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center text-xl group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-shield-halved"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white">1) AI 리터러시 & 윤리 의식</h3>
+                    <p class="text-slate-300 text-sm leading-relaxed">
+                        단순한 AI 소비자에 머무르지 않고, 책임감 있는 AI 활용 문화를 주도하는 윤리적 척도를 확립했습니다.
+                    </p>
+                    
+                    <!-- 5 Ethics checklist -->
+                    <div class="pt-3 border-t border-slate-800 space-y-2">
+                        <div class="text-xs font-semibold text-slate-400 mb-2">수립한 5대 핵심 가치</div>
+                        <div class="grid grid-cols-1 gap-1.5 text-xs text-slate-300">
+                            <span class="flex items-center gap-2"><i class="fa-solid fa-check text-brand-500 text-[10px]"></i> 출처 표기 (Attribution)</span>
+                            <span class="flex items-center gap-2"><i class="fa-solid fa-check text-brand-500 text-[10px]"></i> 할루시네이션 다각도 검증</span>
+                            <span class="flex items-center gap-2"><i class="fa-solid fa-check text-brand-500 text-[10px]"></i> 창의적 보조 도구로 활용</span>
+                            <span class="flex items-center gap-2"><i class="fa-solid fa-check text-brand-500 text-[10px]"></i> 철저한 개인정보 보호</span>
+                            <span class="flex items-center gap-2"><i class="fa-solid fa-check text-brand-500 text-[10px]"></i> 데이터 및 편향성 공정성</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 2 -->
+            <div class="rounded-2xl p-6 bg-slate-900/80 border border-slate-800 hover:border-accent-500/50 transition-all duration-300 flex flex-col justify-between group">
+                <div class="space-y-4">
+                    <div class="w-12 h-12 rounded-xl bg-indigo-500/10 text-indigo-400 flex items-center justify-center text-xl group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white">2) 창의적 미디어 표현 & 시너지</h3>
+                    <p class="text-slate-300 text-sm leading-relaxed">
+                        생성형 AI를 활용해 창의성의 한계를 넓히고, 상상을 현실의 미디어로 구현해 내는 경험을 쌓았습니다.
+                    </p>
+                    
+                    <div class="p-4 rounded-xl bg-slate-950/70 border border-slate-800/80 text-xs space-y-2">
+                        <div class="flex items-center gap-2 text-indigo-400 font-semibold">
+                            <i class="fa-solid fa-book-open"></i>
+                            AI 동화 창작 프로젝트
+                        </div>
+                        <p class="text-slate-400">
+                            ChatGPT로 구조화된 시나리오를 구상하고 AI 이미지 도구를 접목하여 기승전결이 명확한 **동화 스토리북**을 자체 제작했습니다.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 3 -->
+            <div class="rounded-2xl p-6 bg-slate-900/80 border border-slate-800 hover:border-sky-500/50 transition-all duration-300 flex flex-col justify-between group">
+                <div class="space-y-4">
+                    <div class="w-12 h-12 rounded-xl bg-sky-500/10 text-sky-400 flex items-center justify-center text-xl group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-city"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white">3) 실생활 및 지역사회 문제 해결</h3>
+                    <p class="text-slate-300 text-sm leading-relaxed">
+                        공공데이터와 웹 개발 기술을 접목하여 사회와 학교 현장의 구체적 불편함을 개선하는 프로토타입을 제작했습니다.
+                    </p>
+
+                    <!-- Projects Accordion/List -->
+                    <div class="space-y-2 text-xs">
+                        <div class="p-2.5 rounded-lg bg-slate-950/80 border border-slate-800 flex items-start gap-2.5">
+                            <i class="fa-solid fa-route text-brand-500 mt-0.5"></i>
+                            <div>
+                                <strong class="text-slate-200 block">통학로 안전 최적 경로 설계 앱</strong>
+                                <span class="text-slate-400">아이들의 안전한 등하교 보장을 위한 데이터 분석 앱</span>
+                            </div>
+                        </div>
+                        <div class="p-2.5 rounded-lg bg-slate-950/80 border border-slate-800 flex items-start gap-2.5">
+                            <i class="fa-solid fa-utensils text-amber-500 mt-0.5"></i>
+                            <div>
+                                <strong class="text-slate-200 block">전국 학교 급식 정보 웹앱</strong>
+                                <span class="text-slate-400">전국 학교 급식 정보 검색 및 AI 활용 서비스</span>
+                            </div>
+                        </div>
+                        <div class="p-2.5 rounded-lg bg-slate-950/80 border border-slate-800 flex items-start gap-2.5">
+                            <i class="fa-solid fa-map-location-dot text-indigo-400 mt-0.5"></i>
+                            <div>
+                                <strong class="text-slate-200 block">부산 축제 정보 데이터 웹 사이트</strong>
+                                <span class="text-slate-400">공공데이터 OpenAPI 연동 지역 문화 활성화 정보</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 2: Final Reflection Banner -->
+    <section class="py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+        <div class="relative rounded-3xl p-8 sm:p-12 bg-gradient-to-br from-slate-900 via-slate-900 to-slate-950 border border-slate-800 text-center space-y-6 overflow-hidden">
+            <div class="absolute inset-0 bg-grid-white/[0.02] bg-[size:20px_20px]"></div>
+            
+            <span class="inline-block px-4 py-1.5 rounded-full bg-brand-500/10 text-brand-400 font-bold text-xs border border-brand-500/20">
+                FINAL REFLECTION
+            </span>
+
+            <blockquote class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white max-w-4xl mx-auto leading-tight">
+                "Simple User에서 <span class="gradient-text">AI Problem Solver</span>로의 도약"
+            </blockquote>
+
+            <p class="text-slate-300 text-sm sm:text-base max-w-2xl mx-auto leading-relaxed">
+                질문을 던지고 답변만 받던 수동적 사용자를 탈피하여, 사회적 가치를 창출하는 2가지 정체성을 지닌 개발자로 진화했습니다.
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-3xl mx-auto text-left pt-4">
+                <div class="p-5 rounded-2xl bg-slate-950/80 border border-slate-800 flex items-start gap-4">
+                    <div class="w-10 h-10 rounded-xl bg-brand-500/10 text-brand-400 flex items-center justify-center text-lg shrink-0">
+                        <i class="fa-solid fa-user-check"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-white text-base">1. AI 윤리적 운용자</h4>
+                        <p class="text-xs text-slate-400 mt-1">프롬프트를 정교화하고 모델의 할루시네이션을 다각도로 교증할 수 있는 정밀 검증 역량 확보</p>
+                    </div>
+                </div>
+
+                <div class="p-5 rounded-2xl bg-slate-950/80 border border-slate-800 flex items-start gap-4">
+                    <div class="w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-400 flex items-center justify-center text-lg shrink-0">
+                        <i class="fa-solid fa-laptop-code"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-white text-base">2. AI 서비스 엔지니어</h4>
+                        <p class="text-xs text-slate-400 mt-1">공공 OpenAPI와 AI 모델을 결합하여 실생활 문제를 개선하고 웹앱 프로토타입으로 완성하는 역량</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 4: Future Commitment -->
+    <section id="future" class="py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-8">
+        <div class="text-center max-w-3xl mx-auto space-y-3">
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-white flex items-center justify-center gap-3">
+                <i class="fa-solid fa-compass text-accent-500"></i>
+                <span>앞으로의 성장 다짐</span>
+            </h2>
+            <p class="text-slate-400 text-sm sm:text-base">
+                컴퓨터공학과 진학을 향한 김태윤의 지속 가능한 도약 계획
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="p-6 sm:p-8 rounded-2xl bg-slate-900 border border-slate-800 relative overflow-hidden group">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-brand-500/5 rounded-bl-full pointer-events-none"></div>
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="w-10 h-10 rounded-xl bg-brand-500/20 text-brand-400 flex items-center justify-center font-bold text-lg">01</span>
+                    <h3 class="text-xl font-bold text-white">컴퓨터공학(CS) 기초 역량 강화</h3>
+                </div>
+                <p class="text-slate-300 text-sm leading-relaxed mb-4">
+                    Python과 C++을 바탕으로 자료구조, 알고리즘, 컴퓨터 아키텍처 등 CS 전공 기초 이론을 탄탄히 다져 AI 모델의 원리를 한층 더 깊이 이해하겠습니다.
+                </p>
+                <div class="flex flex-wrap gap-2 text-xs">
+                    <span class="px-2.5 py-1 rounded bg-slate-800 text-brand-400 font-mono">자료구조 & 알고리즘</span>
+                    <span class="px-2.5 py-1 rounded bg-slate-800 text-brand-400 font-mono">C++ 시스템 프로그래밍</span>
+                    <span class="px-2.5 py-1 rounded bg-slate-800 text-brand-400 font-mono">컴퓨터 아키텍처</span>
+                </div>
+            </div>
+
+            <div class="p-6 sm:p-8 rounded-2xl bg-slate-900 border border-slate-800 relative overflow-hidden group">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-accent-500/5 rounded-bl-full pointer-events-none"></div>
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="w-10 h-10 rounded-xl bg-accent-500/20 text-accent-400 flex items-center justify-center font-bold text-lg">02</span>
+                    <h3 class="text-xl font-bold text-white">지속 가능한 AI 윤리 준수</h3>
+                </div>
+                <p class="text-slate-300 text-sm leading-relaxed mb-4">
+                    기술의 발전 속도에 발맞추어 편향성 검증, 데이터 보안, 인공지능 책임성 가이드를 지속 연구하여 사회에 긍정적인 영향력을 미치는 따뜻한 테크놀로지스트(Technologist)로 성장하겠습니다.
+                </p>
+                <div class="flex flex-wrap gap-2 text-xs">
+                    <span class="px-2.5 py-1 rounded bg-slate-800 text-accent-400 font-mono">데이터 보안</span>
+                    <span class="px-2.5 py-1 rounded bg-slate-800 text-accent-400 font-mono">편향성 무력화 연구</span>
+                    <span class="px-2.5 py-1 rounded bg-slate-800 text-accent-400 font-mono">책임감 있는 Technologist</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="mt-16 border-t border-slate-800/80 py-8 bg-slate-950 text-center text-xs text-slate-400 space-y-2">
+        <p>© 2026 Kim Tae-yoon. '인공지능일반' 교과목 성찰 및 포트폴리오 웹페이지</p>
+        <p class="text-slate-400">Created with HTML5 & Tailwind CSS</p>
+    </footer>
+
+</body>
+</html>
