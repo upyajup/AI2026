@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="ko" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEIS 학교 급식 알리미 - 서비스 소개</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts (Noto Sans KR & Outfit) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Noto Sans KR"', 'sans-serif'],
+                        display: ['"Outfit"', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#10b981',
+                            600: '#059669',
+                            700: '#047857',
+                            800: '#065f46',
+                            900: '#064e3b',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Noto Sans KR', sans-serif; }
+        .bg-grid-pattern {
+            background-image: radial-gradient(rgba(16, 185, 129, 0.1) 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(229, 231, 235, 0.8);
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased selection:bg-brand-500 selection:text-white">
+
+    <!-- Navigation -->
+    <header class="sticky top-0 z-50 glass-panel border-b border-slate-200/80 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16 sm:h-20">
+                <!-- Logo -->
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-brand-500 to-emerald-600 flex items-center justify-center text-white shadow-md shadow-brand-500/20">
+                        <i class="fa-solid fa-utensils text-lg"></i>
+                    </div>
+                    <div>
+                        <span class="font-display font-bold text-lg sm:text-xl tracking-tight text-slate-900 block leading-none">NEIS Meal<span class="text-brand-600">Info</span></span>
+                        <span class="text-[10px] sm:text-xs font-medium text-slate-500">학교 급식 알리미</span>
+                    </div>
+                </div>
+
+                <!-- Nav & Actions -->
+                <div class="flex items-center gap-3 sm:gap-6">
+                    <nav class="flex items-center gap-4 sm:gap-6 text-sm font-semibold text-slate-600">
+                        <a href="../index.html" class="flex items-center gap-1.5 hover:text-brand-600 transition-colors py-2 px-1">
+                            <i class="fa-solid fa-house"></i>
+                            <span>홈</span>
+                        </a>
+                        <a href="#overview" class="hidden sm:block hover:text-brand-600 transition-colors">프로젝트 개요</a>
+                        <a href="#features" class="hidden sm:block hover:text-brand-600 transition-colors">주요 기능</a>
+                    </nav>
+
+                    <a href="https://food-six-swart.vercel.app/" target="_blank" rel="noopener noreferrer" class="px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs sm:text-sm shadow-md shadow-brand-600/20 transition-all transform hover:-translate-y-0.5 flex items-center gap-1.5">
+                        <span>앱 바로가기</span>
+                        <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="overview" class="relative pt-12 pb-20 md:pt-20 md:pb-28 bg-grid-pattern overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="max-w-3xl mx-auto space-y-6 text-center">
+                <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-50 border border-brand-200 text-brand-700 text-xs font-bold tracking-wide">
+                    <span class="w-2 h-2 rounded-full bg-brand-500 animate-pulse"></span>
+                    교육부 나이스(NEIS) Open API 연동
+                </div>
+
+                <h1 class="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 leading-[1.2]">
+                    전국 모든 학교 급식,<br>
+                    <span class="bg-gradient-to-r from-brand-600 via-emerald-500 to-teal-600 bg-clip-text text-transparent">
+                        스마트 급식 가이드
+                    </span>와 함께!
+                </h1>
+
+                <p class="text-base sm:text-lg text-slate-600 max-w-2xl mx-auto font-normal leading-relaxed">
+                    실시간 급식 메뉴와 칼로리, 19가지 알레르기 안전 유발 성분 필터링부터 월간 급식 달력까지 한눈에 확인하세요.
+                </p>
+
+                <div class="pt-2 flex flex-wrap items-center justify-center gap-4">
+                    <a href="#features" class="px-6 py-3.5 rounded-2xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-base shadow-lg shadow-brand-600/30 transition-all transform hover:-translate-y-0.5 flex items-center gap-2">
+                        <i class="fa-solid fa-list-check"></i>
+                        <span>주요 기능 확인하기</span>
+                    </a>
+                </div>
+
+                <!-- Trust Metrics -->
+                <div class="pt-10 border-t border-slate-200/80 grid grid-cols-3 gap-4 text-center max-w-xl mx-auto">
+                    <div>
+                        <div class="text-2xl sm:text-3xl font-bold font-display text-slate-900">17개</div>
+                        <div class="text-xs text-slate-500 font-medium">전국 시·도 교육청</div>
+                    </div>
+                    <div>
+                        <div class="text-2xl sm:text-3xl font-bold font-display text-brand-600">19가지</div>
+                        <div class="text-xs text-slate-500 font-medium">알레르기 안전 가드</div>
+                    </div>
+                    <div>
+                        <div class="text-2xl sm:text-3xl font-bold font-display text-teal-600">100%</div>
+                        <div class="text-xs text-slate-500 font-medium">실시간 NEIS 연동</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Core Features Section -->
+    <section id="features" class="py-20 bg-white border-t border-slate-200/80">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-2xl mx-auto mb-16 space-y-3">
+                <h2 class="text-xs font-bold tracking-widest text-brand-600 uppercase">Core Features</h2>
+                <p class="text-3xl font-extrabold text-slate-900 sm:text-4xl">4가지 핵심 서비스 기능</p>
+                <p class="text-slate-600 text-sm sm:text-base">학생, 학부모, 영양사 모두가 편리하게 사용하는 맞춤형 기능</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+                <!-- Feature 1 -->
+                <div class="p-8 rounded-3xl bg-slate-50 border border-slate-200/80 hover:border-brand-500/50 hover:shadow-xl hover:shadow-brand-500/5 transition-all duration-300 flex flex-col justify-between group">
+                    <div class="space-y-4">
+                        <div class="w-14 h-14 rounded-2xl bg-brand-100 text-brand-600 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-calendar-day"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-900">일별 급식 조회 및 날짜 탐색</h3>
+                        <p class="text-slate-600 text-sm leading-relaxed">
+                            달력 피커 및 이전/다음 날짜, 오늘 버튼으로 빠른 일별 식단 탐색을 지원합니다. 주간 퀵 스트립을 통해 한 주간의 메뉴와 조식/중식/석식을 한눈에 구별하여 확인할 수 있습니다.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Feature 2 -->
+                <div class="p-8 rounded-3xl bg-slate-50 border border-slate-200/80 hover:border-brand-500/50 hover:shadow-xl hover:shadow-brand-500/5 transition-all duration-300 flex flex-col justify-between group">
+                    <div class="space-y-4">
+                        <div class="w-14 h-14 rounded-2xl bg-brand-100 text-brand-600 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-school"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-900">전국 학교 실시간 검색</h3>
+                        <p class="text-slate-600 text-sm leading-relaxed">
+                            전국 17개 시·도교육청 소속 초·중·고등학교를 키워드로 실시간 조회합니다. 시·도교육청 필터링으로 동명의 학교도 정확하게 찾을 수 있으며, 자주 방문하는 학교는 로컬 저장소에 자동 저장됩니다.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Feature 3 -->
+                <div class="p-8 rounded-3xl bg-slate-50 border border-slate-200/80 hover:border-brand-500/50 hover:shadow-xl hover:shadow-brand-500/5 transition-all duration-300 flex flex-col justify-between group">
+                    <div class="space-y-4">
+                        <div class="w-14 h-14 rounded-2xl bg-brand-100 text-brand-600 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-shield-halved"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-900">맞춤형 알레르기 유발 성분 필터</h3>
+                        <p class="text-slate-600 text-sm leading-relaxed">
+                            난류, 우유, 대두, 땅콩 등 나이스 표준 19가지 알레르기 유발 물질을 선택하고 관리할 수 있습니다. 해당 성분이 포함된 식단 메뉴에는 빨간색 경고 뱃지 및 시각적 Highlight가 즉시 적용됩니다.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Feature 4 -->
+                <div class="p-8 rounded-3xl bg-slate-50 border border-slate-200/80 hover:border-brand-500/50 hover:shadow-xl hover:shadow-brand-500/5 transition-all duration-300 flex flex-col justify-between group">
+                    <div class="space-y-4">
+                        <div class="w-14 h-14 rounded-2xl bg-brand-100 text-brand-600 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-calendar-days"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-900">월간 급식 달력 뷰</h3>
+                        <p class="text-slate-600 text-sm leading-relaxed">
+                            선택한 월 전체의 급식 제공 여부와 대표 메뉴, 칼로리 정보를 그리드 달력 형태의 시각적 인터페이스로 제공합니다. 달력의 특정 날짜를 클릭하면 상세 일별 보기로 즉시 이동합니다.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 py-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-4">
+            <div class="flex items-center justify-center gap-2 text-white font-bold text-lg">
+                <div class="w-8 h-8 rounded-xl bg-brand-600 flex items-center justify-center text-white text-sm">
+                    <i class="fa-solid fa-utensils"></i>
+                </div>
+                <span>NEIS 학교 급식 알리미</span>
+            </div>
+            <p class="text-xs max-w-md mx-auto text-slate-500 leading-relaxed">
+                교육부 나이스(NEIS) Open API 기반 전국 초·중·고등학교 급식 정보 서비스입니다.
+            </p>
+            <div class="text-[11px] text-slate-600 pt-4 border-t border-slate-800">
+                © 2026 NEIS School Meal Info Project. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>
